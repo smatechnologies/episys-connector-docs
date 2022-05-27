@@ -3,7 +3,7 @@ module.exports = {
   title: 'SMA Technologies Help',
   tagline: 'Episys Agent',
   url: 'https://help.smatechnologies.com',
-  baseUrl: '/agents/episys/',
+  baseUrl: '/opcon/agents/episys/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
