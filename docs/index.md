@@ -1,36 +1,14 @@
 ---
 slug: '/'
-sidebar_label: 'Product Name'
+sidebar_label: 'Episys Agent'
 ---
 
-# Tutorial Intro
+# Episys Interface Overview
 
-Let's discover **Docusaurus in less than 5 minutes**.
+The Episys Interface is an OpCon environment that allows OpCon to run RSJ through a UNIX LSAM on the Episys server.
 
-## Getting Started
+The current version is **21.00.0000**
 
-Get started by **creating a new site**.
+Windows File Names
+Some systems will not allow long file names (e.g., C:\Program Files\OpConxps\). To work around this, revert to method 8.3. In this method, the 7th character becomes a tilde followed by a 1 (e.g., C:\Progra~1\OpConxps\).
 
-Or **try Docusaurus immediately** with **[new.docusaurus.io](https://new.docusaurus.io)**.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**:
-
-```shell
-npx @docusaurus/init@latest init my-website classic
-```
-
-## Start your site
-
-Run the development server:
-
-```shell
-cd my-website
-
-npx docusaurus start
-```
-
-Your site starts at `http://localhost:3000`.
-
-Open `docs/intro.md` and edit some lines: the site **reloads automatically** and display your changes.
