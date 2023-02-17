@@ -3,12 +3,12 @@ module.exports = {
   title: 'SMA Technologies Help',
   tagline: 'Episys Agent',
   url: 'https://help.smatechnologies.com',
-  baseUrl: '/opcon/agents/episys/',
+  baseUrl: '/opcon/connectors/episys/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'smatechnologies',
-  projectName: 'episys-agent-docs',
+  projectName: 'episys-connector-docs',
   themeConfig: {
     navbar: {
       title: 'Help',
@@ -32,7 +32,7 @@ module.exports = {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/smatechnologies/episys-agent-docs/blob/main',
+            'https://github.com/smatechnologies/episys-connector-docs/blob/main',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
