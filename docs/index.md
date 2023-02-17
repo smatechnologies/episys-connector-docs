@@ -1,6 +1,6 @@
 ---
 slug: '/'
-sidebar_label: 'Episys Agent'
+sidebar_label: 'Episys (RSJ) Connector'
 ---
 
 # Episys Interface Overview
