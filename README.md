@@ -1,6 +1,6 @@
-# SMA OpCon Episys Agent Docs
+# SMA OpCon Episys Connector (RSJ) Docs
 
-This repository contains the content behind the SMA OpCon Episys Agent documentation hosted at <https://help.smatechnologies.com/opcon/agents/episys>.
+This repository contains the content behind the SMA OpCon Episys (RSJ) Connector documentation hosted at <https://help.smatechnologies.com/opcon/connectors/episys>.
 
 ## Disclaimer
 
@@ -10,9 +10,9 @@ SMA Technologies assumes no liability for damage caused by the usage of any of t
 
 ## License
 
-Copyright 2021 SMA Technologies
+Copyright 2023 SMA Technologies
 
-This SMA OpCon Episys Agent documentation is [Creative Commons licensed](LICENSE).
+This SMA OpCon Episys Connector documentation is [Creative Commons licensed](LICENSE).
 
 ## Contribution
 
