@@ -4,6 +4,18 @@ sidebar_label: 'Release notes'
 
 # Episys Agent release notes
 
+## Version 22.00.0100
+
+2021 December
+
+:white_check_mark: **CONNUTIL-538**: Added additional debugging into LookForReportSequenceInReports.
+
+## Version 22.00.0000
+
+2021 December
+
+:white_check_mark: **CONNUTIL-538**: Fixed an issue where utilities returned a 'SYM is in an unknown state' error message by updating PATH and ENV variables. Added ability for RSJ, SAJ, and utilities to add environment variables at runtime.
+
 ## Version 21.00.0000
 
 2021 March
