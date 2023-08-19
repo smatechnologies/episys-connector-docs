@@ -138,7 +138,7 @@ chmod 777 /SYM/OP/bin
 
 * Then, you can create the file by executing:
 
-```echo "export ODMDIR=/ect/objrepos" > /SYM/OP/bin/LOGON```
+```echo "export ODMDIR=/etc/objrepos" > /SYM/OP/bin/LOGON```
 
 3. Edit ```/ops/bin/rootInfo``` and change the setting of pathToEnvironment to:```/SYM/OP/bin/LOGON```
 
