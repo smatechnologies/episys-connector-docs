@@ -685,7 +685,7 @@ Possible SMADump_scf errors are:
 
 /ops/bin/SMADump_scf -f/SYM/SYM000/BATCH/CC.LATE.FEE
 
-::::
+:::
 
 ## sma_hostinfo
 

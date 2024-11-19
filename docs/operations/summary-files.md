@@ -16,67 +16,32 @@ The job output will have messages added to show that this was specified. Note th
 
 :::tip Example 
 
+```
 RSJ Version=15.00.000
-
 exe path=/ops/bin/RSJ15.00/RSJ=
-
 argv[0]=/ops/bin/RSJ15.00.00/RSJ=
-
 argv[1]=SYM000=
-
 argv[2]=GOODNIGHT=
-
 argv[3]=-s/SYM/SYM000/summaryconfig=
-
 INFO Wed Mar 25 11:12:21 2015 Copyright@ SMA 2015=
-
-INFO Wed Mar 25 11:12:21 2015 This code may not be transferred/lent/copied
-
-outside your organization without SMA approval=
-
-INFO Wed Mar 25 11:12:21 2015 Summary Configuration file is =/SYM/SYM000/
-
-LETTERSPECS/GoodnightSummaryConfig=
-
+INFO Wed Mar 25 11:12:21 2015 This code may not be transferred/lent/copied outside your organization without SMA approval=
+INFO Wed Mar 25 11:12:21 2015 Summary Configuration file is =/SYM/SYM000/LETTERSPECS/GoodnightSummaryConfig=
 INFO Wed Mar 25 11:12:21 2015 SYM=SYM000=
-
 INFO Wed Mar 25 11:12:21 2015 Jobfile=GOODNIGHT=
-
 INFO Wed Mar 25 11:12:21 2015 Restart Point was not input=
-
 INFO Wed Mar 25 11:12:22 2015 default_file=/SYM/SYM000/BATCH/SMA_DEFAULTS=
-
 ....
-
 %BATCHRETURNCODE: 000 Job successful from Program: BATCHHOSTCONTROL.
-
 %COMPLETIONDATETIME 03/25/15 11:14:44
-
-======================= COMPLETION OF BATCH PROCESSING
-
-======================
-
+======================= COMPLETION OF BATCH PROCESSING ======================
 INFO Wed Mar 25 11:14:45 2015 Closed jobfile ONLINE=
-
 INFO Wed Mar 25 11:14:45 2015 Closed jobfile GOODNIGHT=
-
-INFO Wed Mar 25 11:14:46 2015 SummaryFileName =[/SYM/SYM000/LETTERSPECS/
-
-GoodnightSummary]=
-
-INFO Wed Mar 25 11:14:46 2015 opcon_message using environment this_path=/usr/
-
-local/lsam-05.20.30/bin=
-
-INFO Wed Mar 25 11:14:46 2015 opcon_message using path=/usr/local/lsam-
-
-05.20.30/bin/sma_status=
-
-INFO Wed Mar 25 11:14:46 2015 opcon_message= /usr/local/lsam-05.20.30/bin/
-
-sma_status "Waiting for LockFile"=
-
+INFO Wed Mar 25 11:14:46 2015 SummaryFileName =[/SYM/SYM000/LETTERSPECS/GoodnightSummary]=
+INFO Wed Mar 25 11:14:46 2015 opcon_message using environment this_path=/usr/local/lsam-05.20.30/bin=
+INFO Wed Mar 25 11:14:46 2015 opcon_message using path=/usr/local/lsam-05.20.30/bin/sma_status=
+INFO Wed Mar 25 11:14:46 2015 opcon_message= /usr/local/lsam-05.20.30/bin/sma_status "Waiting for LockFile"=
 INFO Wed Mar 25 11:14:46 2015 all done=
+```
 
 ::: 
 
