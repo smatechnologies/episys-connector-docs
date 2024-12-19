@@ -537,6 +537,7 @@ Possible SMADump_scf errors are:
 * Command line is incorrectly formatted.
 * Unable to read or write the specified file.
 
+
 ## sma_hostinfo
 
 sma_hostinfo is a UNIX program that generates all information needed to license the RSJ program. It should be run by root in a telnet session and the file sma_info sent to [license@smatechnologies.com](mailto:license@smatechnologies.com).
