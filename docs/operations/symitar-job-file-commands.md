@@ -8,6 +8,9 @@ The file SMA_DEFAULTS is stored in /SYM/SYMnnn/BATCH. It is a completely optiona
 
 * ;EXCEPTION_REPORT
 
+
+* ;EXCEPTION_REPORT
+
 * ;EXCEPTION_REPORT
 
 * ;EXCEPTION_REPORT_CLEAR
@@ -427,3 +430,6 @@ The directive FATAL_MESSAGE_CLEAR removes all fatal error messages (including th
 Usage:
 
 ```;FATAL_MESSAGE_CLEAR```
+
+```;FATAL_MESSAGE_CLEAR```
+

@@ -714,6 +714,8 @@ LookForReportSequence will pull from the BatchOutput file to get the sequence nu
 | -9 | Invalid Report Directory - aborting |
 | -10 | Specified report not found - aborting |
 
+:::
+
 ### LookForReportSequenceInReports
 
 :::info Note
