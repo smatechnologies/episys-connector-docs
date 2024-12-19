@@ -4,7 +4,7 @@
 
 ach_processed validates that a given ACH file has not been processed before. It stores its database of previously processed ACH files at /SYM/SYMnnn/BATCH/ach_processed. It returns 0 on a successful completion (i.e., the file has not been processed before).
 
- Usage: ```/ops/bin/ach_processed sym# ACH_FILE```
+ **Usage:** ```/ops/bin/ach_processed sym# ACH_FILE```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 
@@ -14,7 +14,7 @@ backup_and_prune is a program that will tar and compress the /SYM/SYMnnn/opcon_r
 
 It is highly recommended that all credit unions run this program nightly. The usage line contains the SMA Technologies and Symitar recommended defaults. For information on the backups, refer to the program [backup_reports](#backup_reports).
 
-Usage: ```/ops/bin/backup_and_prune SYM000 7 30```
+**Usage:** ```/ops/bin/backup_and_prune SYM000 7 30```
 
 * **Sym#:** The sym number of the form sym000.
 * **days_to_keep_reports:** # days to keep files in the report directory.
@@ -30,7 +30,7 @@ Usage: ```/ops/bin/backup_and_prune SYM000 7 30```
 
 backup_reports is a program that will tar and compress the /SYM/SYMnnn/opcon_reports directory. It stores the resulting file in /SYM/SYMnnn/opcon_backup directory. Normally, users should not run this program, but rather use [backup_and_prune](#backup_and_prune).
 
-Usage: ```/ops/bin/backup_reports sym#```
+**Usage:** ```/ops/bin/backup_reports sym#```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 
@@ -51,7 +51,7 @@ Usage: ```/ops/bin/backup_reports sym#```
 
 change_perms is a program that will change the owner, group and permissions on a file. This program is typically used after a file transfer. 
 
-Usage: ```/ops/bin/change_perms SYM_USER full_path_to_file```
+**Usage:** ```/ops/bin/change_perms SYM_USER full_path_to_file```
 
 * **SYM_USER:** The user of the desired sym (e.g., SYM000, SYM100, or SYM999).
 * **Full_path_to_file:** Provides the fully qualified path details to indicate where the file is located.
@@ -75,7 +75,7 @@ compare_fed_totals is a UNIX script that will compare the ACH totals from the Fe
 
 For additional information that applies to Episys Details with compare_fed_totals in the Start Image, refer to [Episys: Compare ACH Totals](https://help.smatechnologies.com/opcon/core/job-types/unix#episys-compare-ach-totals) in the Concepts online help.
 
-Usage: ```/ops/bin/compare_fed_totals sym# fed_file batch_output_file```
+**Usage:** ```/ops/bin/compare_fed_totals sym# fed_file batch_output_file```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 * **fed_file:** An explicit path or the program will check:
@@ -186,7 +186,7 @@ find_programs is a program that will find all Symitar batch jobs in a specific s
 
 The output of this program is an OpCon formatted execution line of all Symitar batch jobs. JORS should be used to retrieve the output of this executable, and then cut and paste from this file into the command line section of a new OpCon job.
 
- Usage: ```/ops/bin/find_programs sym#```
+ **Usage:** ```/ops/bin/find_programs sym#```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM00, SYM100, or SYM999).
 
@@ -200,7 +200,7 @@ The output of this program is an OpCon formatted execution line of all Symitar b
 
 find_prompts is a program that will find all possible user prompts in a nested Symitar job. This program facilitates the conversion of a Symitar job file into OpCon.
 
-Usage: ```/ops/bin/find_prompts sym# job_file```
+**Usage:** ```/ops/bin/find_prompts sym# job_file```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 * **job_file:** Job file to search for prompts.
@@ -211,9 +211,15 @@ Usage: ```/ops/bin/find_prompts sym# job_file```
 
 ## ForceLogOff
 
+:::warning
+
+If user(s) are running any Episys jobs interactively, running this command can lock up the database requiring a reload of the sym. For a more complete explanation, refer to [Canceling an RSJ Job](operations/canceling-rsj-job).
+
+:::
+
 ForceLogOff will automatically log off any user that is logged into a specific SYM.
 
-Usage: ```/ops/bin/ForceLogOff sym#```
+**Usage:** ```/ops/bin/ForceLogOff sym#```
 
 * **sym#:** Make sure the sym number is a three-digit number (e.g., 100).
 
@@ -229,17 +235,11 @@ Usage: ```/ops/bin/ForceLogOff sym#```
 | ------- | ----------- |
 | 0 | Successful completion |
 
-:::warning
-
-If user(s) are running any Episys jobs interactively, running this command can lock up the database requiring a reload of the sym. For a more complete explanation, refer to [Canceling an RSJ Job](operations/canceling-rsj-job).
-
-:::
-
 ## install_dates
 
 install_dates will install all necessary files in all SYM's for proper RSJ configuration. Additionally, it will add the jobfile ```SMA_DATES.JOB``` after all ```%PROGRAM CLOSEDAY and %JOBFILE CLOSEDAY``` occurrences in all job files in the ```/SYM/SYMnnn/BATCH``` directories.
 
-Usage: ```/ops/bin/install_dates```
+**Usage:** ```/ops/bin/install_dates```
 
 ### Return Codes and Descriptions
 
@@ -252,7 +252,7 @@ Usage: ```/ops/bin/install_dates```
 
 integrate_message will update an Episys job file prompts with responses from a note file. It is primarily used when a "\n" must be inserted into a job file.
 
- Usage: ```/ops/bin/integrate_message /SYM/SYMnnn/BATCH/SOME_BATCH_JOB /```
+ **Usage:** ```/ops/bin/integrate_message /SYM/SYMnnn/BATCH/SOME_BATCH_JOB /```
 
 ```full_path_to_notefile [occurrence]```
 
@@ -405,7 +405,7 @@ optical_transfer is a program that will take a list of files to be archived (via
     * Create job to run the optical_report program.
 6. From the Episys box, manually attempt to FTP to the optical box. This one step will save everyone a lot of grief. It is meaningless if you can perform a rsh, rcp, ssh, telnet, remote terminal session, or some fancy FTP gui from another machine. This test is only meaningful if you attempt the FTP login from the appropriate SYMITAR box. This will perform the same procedure that optical_transfer will have to perform and is a lot easier to debug. Validate that the credentials work and that whatever the FTP server is setting the default path [to be] is acceptable (and/or revise the remote path on the optical_transfer command line). To perform a command line FTP, create a telnet session to the Symitar box and issue the command "ftp your_optical_machine_name". The program will prompt for the username and password. On most FTP servers, the "pwd" command is present which will show the current working directory. If it is not available, then perform the "dir" command and start searching the remote file system for a matching directory via tools on the remote FTP host.
 
-Usage: ```/ops/bin/optical_transfer sym# sequence_number ftp_username ftp_password ftp_hostname[:port] ftp_directory_to_place_files [ftp_extension_to_append]```
+**Usage:** ```/ops/bin/optical_transfer sym# sequence_number ftp_username ftp_password ftp_hostname[:port] ftp_directory_to_place_files [ftp_extension_to_append]```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 * **sequence_number:** The name of the report file containing the list of reports to archive.
@@ -419,7 +419,9 @@ Usage: ```/ops/bin/optical_transfer sym# sequence_number ftp_username ftp_passwo
 
 print_batch will print the Batch Output report generated from the most recent OpCon run of a Symitar Batch job. The utility must run separately for each Batch Output report desired.
 
-Usage: ```/ops/bin/print_batch opcon_reports_directory print_queue_name```
+This will the batch Output report from the most recent time OpCon ran the GOODNIGHT Symitar Batch job.
+
+**Usage:** ```/ops/bin/print_batch opcon_reports_directory print_queue_name```
 
 * opcon_reports_directory: The full path to the directory containing the Batch Output report for a Symitar Batch job run through OpCon.
 * print_queue_name: The name of the UNIX print queue to print to.
@@ -430,19 +432,17 @@ Usage: ```/ops/bin/print_batch opcon_reports_directory print_queue_name```
 
 :::
 
-This will the batch Output report from the most recent time OpCon ran the GOODNIGHT Symitar Batch job.
-
 ## qb_sma
 
 qb_sma will display all jobs running in batch queues as well as any interactive RSJ jobs. This command is very similar to the Symitar command qb.
 
-Usage: ```/ops/bin/qb_sma```
+**Usage:** ```/ops/bin/qb_sma```
 
 ## restore_backup_reports
 
 restore_backup_reports is a program that will restore a file made by backup_reports. It will place the files in the /SYM/SYM###/opcon_reports directory (the ### is the three-digit SYM number). It is the user's responsibility to remove any unneeded/unwanted files once they have been restored. The file_name should be an actual file name and not a fully qualified path. The program will automatically prepend the correct path to the file_name.
 
-Usage: ```/ops/bin/restore_backup_reports sym# file_name```
+**Usage:** ```/ops/bin/restore_backup_reports sym# file_name```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 * **file_name:** The file name to restore.
@@ -487,10 +487,16 @@ This script is called with three arguments:
 
 sma_copyjob will prepend the name sma_ to a nested job file and create a new job. This will allow safe editing (prompt setting) of the new job without affecting the original job.
 
-Usage: ```/ops/bin/sma_copyjob SYM# job_file```
+**Usage:** ```/ops/bin/sma_copyjob SYM# job_file```
 
 * **SYM#:** The sym number of the desired sym (e.g., SYM000, SYM100, or SYM999).
 * **job_file:** Provides the job file name.
+
+:::info Note 
+
+Episys has a 32-character limit on job names. This program can and will exceed this limitation. It is the user's responsibility to perform the appropriate renaming/editing of the affected job file(s).
+
+:::
 
 ### Return Codes and Descriptions
 
@@ -498,11 +504,6 @@ Usage: ```/ops/bin/sma_copyjob SYM# job_file```
 | ------- | ---------- |
 | 0 | Successful completion |
 
-:::info Note 
-
-Episys has a 32-character limit on job names. This program can and will exceed this limitation. It is the user's responsibility to perform the appropriate renaming/editing of the affected job file(s).
-
-:::
 
 ## SMA_DATES.JOB
 
@@ -536,7 +537,6 @@ Possible SMADump_scf errors are:
 
 * Command line is incorrectly formatted.
 * Unable to read or write the specified file.
-
 
 ## sma_hostinfo
 
