@@ -4,7 +4,10 @@
 
 The file SMA_DEFAULTS is stored in /SYM/SYMnnn/BATCH. It is a completely optional file. If the file is present, RSJ will read this file before it starts processing on the users job file. Users can place SMA Technologies' directives in it to customize error handling. The directives that can be placed in the file are:
 
+;EXCEPTION_REPORT
+
 * ;EXCEPTION_REPORT
+
 
 * ;EXCEPTION_REPORT
 
@@ -427,3 +430,6 @@ The directive FATAL_MESSAGE_CLEAR removes all fatal error messages (including th
 Usage:
 
 ```;FATAL_MESSAGE_CLEAR```
+
+```;FATAL_MESSAGE_CLEAR```
+
