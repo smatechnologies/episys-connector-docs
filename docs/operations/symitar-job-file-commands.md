@@ -1,5 +1,45 @@
 # Symitar Job File Commands
 
+## SMA_DEFAULTS
+
+The file SMA_DEFAULTS is stored in /SYM/SYMnnn/BATCH. It is a completely optional file. If the file is present, RSJ will read this file before it starts processing on the users job file. Users can place SMA Technologies' directives in it to customize error handling. The directives that can be placed in the file are:
+
+;EXCEPTION_REPORT
+
+* ;EXCEPTION_REPORT
+
+* ;EXCEPTION_REPORT
+
+* ;EXCEPTION_REPORT_CLEAR
+
+* ;ERROR_LEVEL
+
+* ;MAX_EXCEPTIONS
+
+* ;DIE_NO_ERROR_CODE
+
+* ;FATAL_MESSAGE
+
+* ;FATAL_MESSAGE_CLEAR
+
+* ;CREATE_OPCON_REPORTS_LINKS
+
+* ;FAIL_ON_PERSISTENT_EDITFILE
+
+* ;JAVA_HOME
+
+* ;MINUTES_TO_WAIT_FOR_EDITFILE
+
+* ;SEND_OUTPUT_TO_QOUT
+
+If any other commands or comments are found in this file they will be ignored.
+
+:::warning 
+
+This file will be read and executed for all job files to be run. Make sure that reasonable/wanted values are set for error processing. To override these defaults for a single job, you will need to place the desired error processing commands at the start of the job file.
+
+:::
+
 ## CREATE_OPCON_REPORTS_LINKS
 
 CREATE_OPCON_REPORTS_LINKS can be set in the SMA_DEFAULTS file (or set in any batch file - like the other RSJ directives to selectively turn on and off link creation). The default value is "true."
@@ -387,43 +427,3 @@ The directive FATAL_MESSAGE_CLEAR removes all fatal error messages (including th
 Usage:
 
 ```;FATAL_MESSAGE_CLEAR```
-
-## SMA_DEFAULTS
-
-The file SMA_DEFAULTS is stored in /SYM/SYMnnn/BATCH. It is a completely optional file. If the file is present, RSJ will read this file before it starts processing on the users job file. Users can place SMA Technologies' directives in it to customize error handling. The directives that can be placed in the file are:
-
-;EXCEPTION_REPORT
-
-* ;EXCEPTION_REPORT
-
-* ;EXCEPTION_REPORT
-
-* ;EXCEPTION_REPORT_CLEAR
-
-* ;ERROR_LEVEL
-
-* ;MAX_EXCEPTIONS
-
-* ;DIE_NO_ERROR_CODE
-
-* ;FATAL_MESSAGE
-
-* ;FATAL_MESSAGE_CLEAR
-
-* ;CREATE_OPCON_REPORTS_LINKS
-
-* ;FAIL_ON_PERSISTENT_EDITFILE
-
-* ;JAVA_HOME
-
-* ;MINUTES_TO_WAIT_FOR_EDITFILE
-
-* ;SEND_OUTPUT_TO_QOUT
-
-If any other commands or comments are found in this file they will be ignored.
-
-:::warning 
-
-This file will be read and executed for all job files to be run. Make sure that reasonable/wanted values are set for error processing. To override these defaults for a single job, you will need to place the desired error processing commands at the start of the job file.
-
-:::
