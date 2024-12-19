@@ -45,7 +45,12 @@ module.exports = {
   ],
   plugins: [
     [
-      require.resolve('@cmfcmf/docusaurus-search-local'), 
+      require.resolve('@cmfcmf/docusaurus-search-local'),
+      //    [
+      //      require.resolve('@cmfcmf/docusaurus-search-local'),
+      //      {
+      //      }
+      //    ],
       {
       }
     ],
