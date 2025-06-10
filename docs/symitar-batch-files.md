@@ -50,39 +50,33 @@ Effective date: --/--/--
 
 ## Symitar Batch File Program Commands
 
-### @ [default_value]
+### @
+* Default Value
+* Interactively prompts for a response both in interactive and batch jobs. No RSJ job may contain a "@" symbol.
 
-Interactively prompts for a response both in interactive and batch jobs. No RSJ job may contain a "@" symbol. [default_value] may be present, but not always.
+### !
 
-### ! [default_value]
-
+* Default Value
 * When program is being interactively executed, prompts user for response.
 * When program is being run in a batch job, does not prompt user for response.
 
 ### @PREVSYSTEMDATE
 
 * Prompts/does not prompt for previous processing date. 
-* Users can add an optional numeric offset to the date:
-
-@PREVSYSTEMDATE-10
+* Users can add an optional numeric offset to the date: ```@PREVSYSTEMDATE-10```
 
 ### @SYSTEMDATE
 
 * Prompts/does not prompt for today's processing date. 
-* Users can add an optional numeric offset to the date:
-
-@SYSTEMDATE+10
+* Users can add an optional numeric offset to the date: ```@SYSTEMDATE+10```
 
 ### @DATE(month,day,year)
 
 * Uses current date. 
-* Users can add an optional numeric offset to the date:
-
-@DATE(month,day,year)+10
-
 * Month – numeric, ranges from 1 to 12. This field can also contain THIS. THIS means use today's UNIX system date.
 * Day – numeric, ranges from 1 to 31. This field can also contain THIS. THIS means use today's UNIX system date.
 * Year – numeric, ranges from 00 to 99. This field can also contain THIS. THIS means use today's UNIX system date.
+* Users can add an optional numeric offset to the date: ```@DATE(month,day,year)+10```
 
 :::info Note
 
@@ -132,11 +126,11 @@ The %RUNDATE only provides very crude scheduling options that do not always give
 
 * Iteratively match each date between the previous system date and the current system date for all %RUNDATE commands
 
-### %RUNDATE NOMATCHDAY(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)
+### %RUNDATE NOMATCHDAY (MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)
 
 * Runs on any day that does NOT match the specified day
 
-### %RUNDATE MATCHDAY(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)
+### %RUNDATE MATCHDAY (MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)
 
 * Run on any day that does match the specified day
 
