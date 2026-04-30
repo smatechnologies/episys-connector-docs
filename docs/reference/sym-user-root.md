@@ -1,152 +1,157 @@
-# Running RSJ as SYM User and Elevating to Root
+---
+title: Running RSJ as SYM user and elevating to root
+description: "Configure RSJ to run under the SYM user security context and temporarily elevate to root for specific batch jobs that require root permissions."
+tags:
+  - Procedural
+  - System Administrator
+  - Agents
+---
 
-## Running RSJ as a SYM User
+# Running RSJ as SYM user and elevating to root
 
-### Introduction
-It has been requested that security be increased by not allowing jobs to be executed under the root security context. It should be noted that while RSJ was defined in the Enterprise Manager to run as root and it started up as root, it quickly changed user to the SYM user. However, it is more desirable to not have root jobs defined in OpCon. These steps detail how to configure the system to do this.
+## What is it?
 
-### Agent (LSAM)
+By default, RSJ was defined in the Enterprise Manager to run as root, but it immediately changed to the SYM user after starting. This page describes how to configure RSJ to run entirely under the SYM user context, and how to use the `ExecuteAsRoot` directive to temporarily elevate permissions for specific jobs that require root access (such as `SYSTEMBACKUP` in Episys SP3 and later).
 
-#### Configure the Agent
+- Use this configuration to improve security by removing the root job definition from OpCon.
+- Use `ExecuteAsRoot` only for the specific Symitar programs that require root permissions.
 
-1. In ```$LSAM_ROOT/config/<socket>/lsam.conf```, set: ```path_to_su```to ```no```
+## Running RSJ as a SYM user
+
+### Configure the agent
+
+To configure the agent to run under the SYM user, complete the following steps:
+
+1. In `$LSAM_ROOT/config/<socket>/lsam.conf`, set `path_to_su` to `no`.
 2. Stop and restart the agent.
 
-### RSJ Installation
-This will need to be done while logged in as the root user. If the directories already exist, verify that the permissions are set correctly.
+### Configure the RSJ installation
 
-#### Configure RSJ Installation
+This must be done while logged in as the root user. If the directories already exist, verify that the permissions are set correctly.
+
+To configure the RSJ installation, complete the following steps:
 
 1. Create the required directories by entering:
-    * ```mkdir /ops```
-    * ```mkdir /ops/bin```
-    * ```mkdir /ops/bin/args```
-    * ```mkdir /ops/bin/cancel```
-    * ```mkdir /tmp/SMA```
-2. FTP or copy the RSJ tarfile to /ops/bin.
-3. Extract the tarfile, by entering the following:
-    * ```cd /ops/bin```
-    * ```tar xvf *.tar```
+   - `mkdir /ops`
+   - `mkdir /ops/bin`
+   - `mkdir /ops/bin/args`
+   - `mkdir /ops/bin/cancel`
+   - `mkdir /tmp/SMA`
+2. FTP or copy the RSJ tar file to `/ops/bin`.
+3. Extract the tar file by entering:
+   - `cd /ops/bin`
+   - `tar xvf *.tar`
 4. Set the correct directory permissions by entering:
-    * ```chmod –R 777 /ops```
-    * ```chmod 775 /ops/bin/*```
-    * ```chmod 777 /ops/bin/args```
-    * ```chmod 777 /ops/bin/cancel```
-    * ```chmod 777 /tmp/SMA```
+   - `chmod -R 777 /ops`
+   - `chmod 775 /ops/bin/*`
+   - `chmod 777 /ops/bin/args`
+   - `chmod 777 /ops/bin/cancel`
+   - `chmod 777 /tmp/SMA`
 
-## Temporarily Raising Permissions to Root
+## Temporarily raising permissions to root
 
-### Introduction
+### Background
 
-With Service Pack 3 of the latest version of Episys, Symitar has modified the SYSTEMBACKUP script to include a command (```cfgmgr```) that can ONLY be executed by root (or by a user in the system group). This means that this one job MUST be executed as the root user. (There may be additional jobs that fall into this category as well.) RSJ now has a facility that will allow a Symitar batch job to be executed as root and then return to the SYM user. To avoid opening additional security holes, there are significant limitations that have been imposed. For example, consider the following (VERY simple) GOODNIGHT:
+With Service Pack 3 of the latest version of Episys, Symitar modified the `SYSTEMBACKUP` script to include a command (`cfgmgr`) that can only be run by root or a user in the system group. This means that specific jobs must be run as root. RSJ provides the `ExecuteAsRoot` directive to allow a Symitar batch job to run as root and then return to the SYM user.
+
+For example, in a GOODNIGHT job where only `BACKUPSYM000TOSYM001` requires root:
 
 ```
 %JOBFILE OFFLINE
-
 %JOBFILE BACKUPSYM000TOSYM001
-
 %JOBFILE CLOSEDAY
-
 %JOBFILE SMA_DATES.JOB
-
 %JOBFILE DELETE_REPORTS
-
 %JOBFILE ONLINE
 ```
 
-The only job that must run as the root user is ```BACKUPSYM000TOSYM001```. The other jobs should run as the SYM user. Once the RSJ connector is installed and the root Information file has been created, the permissions of this job can be elevated to root by adding the ```;ExecuteAsRoot``` directive immediately before the job. This makes the job batch file look like:
+Add the `;ExecuteAsRoot` directive immediately before the job that requires root:
 
 ```
 %JOBFILE OFFLINE
-
 ;ExecuteAsRoot
-
 %JOBFILE BACKUPSYM000TOSYM001
-
 %JOBFILE CLOSEDAY
-
 %JOBFILE SMA_DATES.JOB
-
 %JOBFILE DELETE_REPORTS
-
 %JOBFILE ONLINE
 ```
 
-### Create Root Information File
+### Create the root information file
 
-1. Change directories to /ops/bin. Examine the file rootInfo. The default values are:
+To set up the root information file, complete the following steps:
 
-```
-rootPromptCharacter=#
+1. Change directories to `/ops/bin` and examine the file `rootInfo`. The default values are:
 
-pathToExpect=/usr/bin/expect
+   ```
+   rootPromptCharacter=#
+   pathToExpect=/usr/bin/expect
+   pathTosu=/usr/bin/su
+   pathToEnvironment=/SYM/OP/bin/LOGON
+   ```
 
-pathTosu=/usr/bin/su
+   Verify that these values are correct. Run `su - root` to verify the root prompt character. The default prompt string is `<hostname> #` — only the ending `#` needs to be specified. There may or may not be an environment file at `/SYM/OP/bin/LOGON`.
 
-pathToEnvironment=/SYM/OP/bin/LOGON
-```
+2. Once the values are correct, run `EncryptRootInfo`. You are prompted for the root password. `EncryptRootInfo` creates an encrypted file called `rootInfo.encrypted`.
 
-* Ensure that these values are correct. (Do a ```su – root``` to verify the root prompt character. The default prompt string is ```<hostname> #```. We only need to specify the ending #. There may or may not be an environment file ```/SYM/OP/bin/LOGON```. Symitar states (in the .profile file that is in root's home directory) that ```/SYM/OP/bin/LOGON``` is the location for local environment variables. We will need to ensure that any environment variables required by cfgmgr are defined.
+3. Complete the setup by running:
 
-2. Once these values are correct, execute EncryptRootInfo. You WILL be prompted for the root password. EncryptRootInfo will create an encrypted file called rootInfo.encrypted.
+   ```
+   cp ExecuteAsRoot /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   chgrp <SYM#> /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   chown <SYM#> /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   chmod 700 /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   ```
 
-3. Complete the set-up process by executing the following commands:
+   :::tip Example
 
-```
-cp ExecuteAsRoot /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   For SYM000:
 
-chgrp <SYM#> /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   ```
+   cp ExecuteAsRoot /SYM/SYM000/BATCH/ExecuteAsRoot
+   chgrp SYM000 /SYM/SYM000/BATCH/ExecuteAsRoot
+   chown SYM000 /SYM/SYM000/BATCH/ExecuteAsRoot
+   chmod 700 /SYM/SYM000/BATCH/ExecuteAsRoot
+   ```
 
-chown <SYM#> /SYM/<SYM#>/BATCH/ExecuteAsRoot
+   :::
 
-chmod 700 /SYM/<SYM#>/BATCH/ExecuteAsRoot
-```
+   :::info Note
 
-:::tip Example
+   With the SP3 release of Episys 16, the script `/SYM/MACROS/SYSTEMBACKUP` was rewritten to include the `cfgmgr` command. An environment variable (`ODMDIR`) is also required.
 
-To set up SYM000, these command would look like:
+   :::
 
-cp ExecuteAsRoot /SYM/SYM000/BATCH/ExecuteAsRoot
+### Include the environment variable
 
-chgrp SYM000 /SYM/SYM000/BATCH/ExecuteAsRoot
+To add the required environment variable, complete the following steps:
 
-chown SYM000 /SYM/SYM000/BATCH/ExecuteAsRoot
+1. Log in as root and run `env`. Note the value for `ODMDIR`.
+2. Create the file `/SYM/OP/bin/LOGON` (if it does not exist). Add the following line:
 
-chmod 700 /SYM/SYM000/BATCH/ExecuteAsRoot
+   ```
+   export ODMDIR=<value from step 1>
+   ```
 
-:::
+   If the directory `/SYM/OP/bin` does not exist, create it:
 
-:::info Note
+   ```
+   mkdir /SYM/OP/bin
+   chmod 777 /SYM/OP/bin
+   ```
 
-With SP3 release of Episys 16, the script ```/SYM/MACROS/SYSTEMBACKUP``` was rewritten to include the chgmgr command. This is why the ability to execute a batch file as root was added. However, an environment variable (```ODMDIR```) is also required.
+   Then create the file:
 
-:::
+   ```
+   echo "export ODMDIR=/etc/objrepos" > /SYM/OP/bin/LOGON
+   ```
 
-### Include the Environment Variable
+3. Edit `/ops/bin/rootInfo` and set `pathToEnvironment` to `/SYM/OP/bin/LOGON`.
+4. Change directories to `/ops/bin` and run `EncryptRootInfo`.
 
-1. Log on as root and enter "env". See what the value is for ```ODMDIR```. (The value on the machine at SMA Technologies is ```/etc/objrepos```).
-2. Create a file named ```/SYM/OP/bin/LOGON``` (if it doesn't exist). In this file, add the line:
-```export ODMDIR=<value found in 1st step>```
+## Limitations
 
-* If the directory ```/SYM/OP/bin``` does not exist, you can create it by executing the following lines:
-
-```
-mkdir /SYM/OP/bin
-
-chmod 777 /SYM/OP/bin
-```
-
-* Then, you can create the file by executing:
-
-```echo "export ODMDIR=/etc/objrepos" > /SYM/OP/bin/LOGON```
-
-3. Edit ```/ops/bin/rootInfo``` and change the setting of pathToEnvironment to:```/SYM/OP/bin/LOGON```
-
-4. Change directories to ```/ops/bin``` and execute EncryptRootInfo.
-
-### Limitations
-
-* The ```;script``` feature will not execute ExecuteAsRoot. This is to prevent malicious use of ExecuteAsRoot.
-* If a job has been elevated to root permission, all ```;script``` specifications encountered within the job (or sub-jobs) will be executed as the SYM user, not as root.
-* The application ExecuteAsRoot can only be driven by RSJ through the SMA Technologies agent.
-* The application ExecuteAsRoot cannot be renamed.
+- The `;SCRIPT` directive does not run `ExecuteAsRoot`. This prevents malicious use.
+- If a job has been elevated to root permission, all `;SCRIPT` specifications within the job or sub-jobs run as the SYM user, not as root.
+- The `ExecuteAsRoot` application can only be driven by RSJ through the SMA Technologies agent.
+- The `ExecuteAsRoot` application cannot be renamed.

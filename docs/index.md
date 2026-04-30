@@ -1,14 +1,85 @@
 ---
 slug: '/'
-sidebar_label: 'Episys (RSJ) Connector'
+sidebar_label: 'Episys Connector'
+hide_table_of_contents: true
+displayed_sidebar: null
 ---
 
-# Episys Interface Overview
+# Episys Connector
 
-The Episys Interface is an OpCon environment that allows OpCon to run RSJ through a UNIX LSAM on the Episys server.
+The Episys Connector allows OpCon to schedule and run Symitar batch jobs on an Episys server through a UNIX agent using RSJ (Remote Symitar Job).
 
-The current version is **21.00.0000**
+<div style={{display: 'flex', gap: '0.75rem', alignItems: 'flex-start', flexWrap: 'wrap', marginTop: '1rem'}}>
 
-Windows File Names
-Some systems will not allow long file names (e.g., C:\Program Files\OpConxps\). To work around this, revert to method 8.3. In this method, the 7th character becomes a tilde followed by a 1 (e.g., C:\Progra~1\OpConxps\).
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
 
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Overview
+
+- [Overview](./overview.md)
+- [Release Notes](./release-notes.md)
+
+</div>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Installation
+
+- [Installation](./installation/installation.md)
+
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Operations
+
+- [Command line](./operations/command-line.md)
+- [JORS configuration](./operations/jors-configuration.md)
+- [Canceling an RSJ job](./operations/canceling-rsj-job.md)
+- [Symitar job file commands](./operations/symitar-job-file-commands.md)
+- [RSJ failover](./operations/rsj-failover.md)
+- [Summary files](./operations/summary-files.md)
+
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Features
+
+- [RSJ reports](./rsj-reports.md)
+- [Symitar batch files](./symitar-batch-files.md)
+- [Symitar exit codes](./symitar-exit-codes.md)
+- [RSJ utility programs](./rsj-utility-programs.md)
+- [Important Symitar concepts](./important-symitar-concepts.md)
+- [SAJ](./saj.md)
+
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Reference
+
+- [RSJ Q&A](./reference/rsj-q-and-a.md)
+- [RSJ known differences](./reference/rsj-known-differences.md)
+- [Known Symitar issues](./reference/known-symitar-issues.md)
+- [UNIX commands](./reference/unix-commands.md)
+- [Commonly used terms](./reference/commonly-used-terms.md)
+- [Running RSJ as SYM user](./reference/sym-user-root.md)
+
+</div>
+
+</div>
+</div>

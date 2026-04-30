@@ -1,22 +1,45 @@
-# Job Output (JORS) Configuration
+---
+title: JORS configuration
+description: "Configure the SQL Server max text repl size parameter to allow OpCon to store and display full Symitar job output through JORS."
+tags:
+  - Procedural
+  - System Administrator
+  - Agents
+---
 
-The SQL Server configuration parameter 'max text repl size' limits the maximum size of the job output response SMA Technologies can accept and store in the SQL database. Execute the following SQL command to increase the number of characters that can be stored. The default is 65536. If it is still too small, increase it again.
+# JORS configuration
+
+## What is it?
+
+JORS (Job Output Retrieval System) allows OpCon to retrieve and display the output of Symitar batch jobs run through RSJ. The SQL Server configuration parameter `max text repl size` limits the maximum size of job output that OpCon can accept and store in its database. For jobs that produce large output files (such as GOODNIGHT), the default limit of 65,536 characters may not be sufficient.
+
+- Configure this setting when job output is being truncated in the OpCon interface.
+- Increase the value if large Symitar jobs such as GOODNIGHT exceed the viewable limit.
+
+## Configuration
+
+To increase the maximum job output size that OpCon can store, run the following SQL command against the OpCon database:
 
 :::tip Example
 
-sp_configure 'max text repl size','600000' RECONFIGURE
+```sql
+sp_configure 'max text repl size','600000'
+RECONFIGURE
+```
 
 :::
 
-The maximum value for this configuration parameter is 2147483647.
+The maximum value for this configuration parameter is `2147483647`.
 
-Versions of OpCon before 4.0 contain a bug that does not allow users to view all their job output from Symitar jobs. Most jobs will be able to have their output viewed without problem. Some jobs like GOODNIGHT will probably exceed the maximum viewable limit. To get around this problem, create a shell script:
+## Workaround for older OpCon versions
 
+Versions of OpCon before 4.0 contain a bug that prevents users from viewing all job output from Symitar jobs. Most jobs display without issue, but jobs with very large output files (such as GOODNIGHT) may exceed the maximum viewable limit. To work around this issue, create a shell script:
+
+```bash
+cat "/ops/bin/RSJ 0 GOODNIGHT|tee /tmp/GOODNIGHT.OUT" >/tmp/GOODNIGHT.KSH
+chmod ugo+x /tmp/GOODNIGHT.KSH
 ```
-cat "/ops/bin/RSJ 0 GOODNIGHT|tee /tmp/GOODNIGHT.OUT" >/tmp/GOODNIGHT.KSH chmod ugo+x /tmp/GOODNIGHT.KSH
-```
 
-In the start image line in OpCon: ```/bin/ksh /tmp/GOODNIGHT.KSH```
+In the start image line in OpCon, use: `/bin/ksh /tmp/GOODNIGHT.KSH`
 
-
-When the job runs, the output will be copied to ```/tmp/GOODNIGHT.OUT``` and ```STDOUT```. Users can then use a text editor (i.e., vi) to view the output.
+When the job runs, the output is copied to `/tmp/GOODNIGHT.OUT` and `STDOUT`. Use a text editor such as `vi` to view the output.

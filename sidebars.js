@@ -1,19 +1,20 @@
 module.exports = {
   mySidebar: [
     'index',
+    'overview',
     'release-notes',
     {
-      type: 'category', 
+      type: 'category',
       label: 'Installation',
-      collapsed: false,
+      collapsed: true,
       items: [
         'installation/installation',
-      ], 
+      ],
     },
     {
-      type: 'category', 
+      type: 'category',
       label: 'Operations',
-      collapsed: false,
+      collapsed: true,
       items: [
         'operations/command-line',
         'operations/jors-configuration',
@@ -21,7 +22,7 @@ module.exports = {
         'operations/symitar-job-file-commands',
         'operations/rsj-failover',
         'operations/summary-files',
-      ], 
+      ],
     },
     'rsj-reports',
     'symitar-batch-files',
@@ -30,9 +31,9 @@ module.exports = {
     'important-symitar-concepts',
     'saj',
     {
-      type: 'category', 
+      type: 'category',
       label: 'Reference',
-      collapsed: false,
+      collapsed: true,
       items: [
         'reference/rsj-q-and-a',
         'reference/rsj-known-differences',
@@ -40,7 +41,7 @@ module.exports = {
         'reference/unix-commands',
         'reference/commonly-used-terms',
         'reference/sym-user-root',
-      ], 
+      ],
     },
   ],
 };
