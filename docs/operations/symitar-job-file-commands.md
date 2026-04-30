@@ -1,198 +1,205 @@
-# Symitar Job File Commands
+---
+title: Symitar job file commands
+description: "Reference for RSJ directives that control error handling, exception reporting, restart points, and script execution within Symitar batch job files."
+tags:
+  - Reference
+  - Automation Engineer
+  - Agents
+---
+
+# Symitar job file commands
+
+## What is it?
+
+Symitar job file commands are RSJ-specific directives inserted as comments (`;`) in Symitar batch job files. These directives control how RSJ handles errors, exceptions, restart points, and script execution. They are not recognized by Symitar's native batch facilities — they are exclusively an RSJ capability.
+
+- Use `ERROR_LEVEL` and `MAX_EXCEPTIONS` together for comprehensive error detection.
+- Use `RESTART_POINT` to recover a failed job without re-running successfully completed programs.
+- Use `SMA_DEFAULTS` to set organization-wide defaults that apply to all job files.
 
 ## SMA_DEFAULTS
 
-The file `SMA_DEFAULTS` is stored in `/SYM/SYMnnn/BATCH`. 
+The file `SMA_DEFAULTS` is stored in `/SYM/SYMnnn/BATCH`.
 
 :::info Important
 
-The `SMA_DEFAULTS` file itself is **optional** - RSJ will run without it. However, using this file is the **recommended way** to configure default error handling settings that apply to all your job files. Think of it as an optional configuration method, not as a file where everything inside is optional.
+The `SMA_DEFAULTS` file itself is **optional** — RSJ runs without it. However, using this file is the **recommended way** to configure default error handling settings that apply to all job files. Think of it as an optional configuration method, not as a file where everything inside is optional.
 
 :::
 
-If the file is present, RSJ will read it before processing any job file. This allows you to set organization-wide defaults for error handling, which can then be overridden in individual job files if needed.
+If the file is present, RSJ reads it before processing any job file. This allows you to set organization-wide defaults for error handling, which individual job files can then override.
 
 The directives that can be placed in the `SMA_DEFAULTS` file are:
 
-* `;EXCEPTION_REPORT`
-* `;EXCEPTION_REPORT_CLEAR`
-* `;ERROR_LEVEL`
-* `;MAX_EXCEPTIONS`
-* `;DIE_NO_ERROR_CODE`
-* `;FATAL_MESSAGE`
-* `;FATAL_MESSAGE_CLEAR`
-* `;CREATE_OPCON_REPORTS_LINKS`
-* `;FAIL_ON_PERSISTENT_EDITFILE`
-* `;JAVA_HOME`
-* `;MINUTES_TO_WAIT_FOR_EDITFILE`
-* `;SEND_OUTPUT_TO_QOUT`
+- `;EXCEPTION_REPORT`
+- `;EXCEPTION_REPORT_CLEAR`
+- `;ERROR_LEVEL`
+- `;MAX_EXCEPTIONS`
+- `;DIE_NO_ERROR_CODE`
+- `;FATAL_MESSAGE`
+- `;FATAL_MESSAGE_CLEAR`
+- `;CREATE_OPCON_REPORTS_LINKS`
+- `;FAIL_ON_PERSISTENT_EDITFILE`
+- `;JAVA_HOME`
+- `;MINUTES_TO_WAIT_FOR_EDITFILE`
+- `;SEND_OUTPUT_TO_QOUT`
 
-If any other commands or comments are found in this file they will be ignored.
+If any other commands or comments are found in this file, they are ignored.
 
-:::warning 
+:::warning
 
-This file will be read and executed for **all** job files to be run. Make sure that reasonable/wanted values are set for error processing. To override these defaults for a single job, you will need to place the desired error processing commands at the start of the job file.
+This file is read and run for **all** job files. Make sure that reasonable values are set for error processing. To override these defaults for a single job, place the desired error processing commands at the start of that job file.
 
 :::
 
 ## CREATE_OPCON_REPORTS_LINKS
 
-CREATE_OPCON_REPORTS_LINKS can be set in the SMA_DEFAULTS file (or set in any batch file - like the other RSJ directives to selectively turn on and off link creation). The default value is "true."
+`CREATE_OPCON_REPORTS_LINKS` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `true`.
 
-:::tip Example 
+:::tip Example
 
+```
 ;CREATE_OPCON_REPORT_LINKS true | false
+```
 
 :::
-
 
 ## ERROR_LEVEL
 
 :::info Note
 
-The ERROR_LEVEL directive is only available from SMA Technologies. Symitar does not support the ERROR_LEVEL directive.
- 
-:::
-
-An error level is the set of return codes that will cause SMA Technologies to stop processing the current Symitar Batch Jobfile (nested or not). The error level directive is inserted into a comment of a Symitar Batch Job. It has the following form:
-
-```;ERROR_LEVEL 1,5-10,10-12,21```
-
-* This command states that if the program return code is in the set of 1, 5, 6, 7, 8, 9, 10, 11, 12, or 21, SMA Technologies should immediately stop processing the job. In previous versions (1.30.0008 and below), the default error level would stop on codes 1 through 10. Symitar has revised their advice and recommend that all errors be trapped since they are using more error codes now. All new installations will have this as the default (1-255). Any upgrades of RSJ should revisit which errors are trapped.
-
-* The current best practice is to only put error level checking at the beginning of a job file. This allows everyone to easily determine what level of error checking is in effect.
-
-* The other common option is to bracket a program with ERROR_LEVEL statements.
-
-:::tip Common Use Cases
-
-* To disable error checking for a job: `;ERROR_LEVEL 999` (999 is outside the normal error code range)
-* To exclude a specific error code (e.g., error code 7 for "Terminate specification found in a Repgen"): `;ERROR_LEVEL 1-6,8-10`
-* To trap all errors (recommended for new installations): `;ERROR_LEVEL 1-255`
-
-:::
-White pencil icon on green circular background	
-
-
-:::tip EXAMPLE 
-
-;skip checking for error code 9
-
-;ERROR_LEVEL 1-8, 10
-
-%PROGRAM REPGEN
-
-prompt : answer
-
-;ERROR_LEVEL 1-10
+The `ERROR_LEVEL` directive is only available from SMA Technologies. Symitar does not support the `ERROR_LEVEL` directive.
 
 :::
 
-While the above syntax is technically correct, it can fail if users use a Symitar editor to edit the job file (the comment lines containing RSJ commands will be reordered). The ERROR_LEVEL commands should be placed into separate files (TURN_OFF_CHECKING and TURN_ON_CHECKING) so that the Episys job file editors cannot reorder the comment lines.
+An error level is the set of return codes that causes RSJ to stop processing the current Symitar batch job file (nested or not). Insert the error level directive as a comment in a Symitar batch job file.
+
+```
+;ERROR_LEVEL 1,5-10,10-12,21
+```
+
+This example states that if the program return code is in the set {1, 5, 6, 7, 8, 9, 10, 11, 12, 21}, RSJ stops processing the job immediately.
+
+The current best practice is to place `ERROR_LEVEL` checking only at the beginning of a job file so that the effective error level is always visible. For exceptions, bracket a program with `ERROR_LEVEL` statements.
+
+:::tip Common use cases
+
+- To disable error checking for a job: `;ERROR_LEVEL 999` (999 is outside the normal error code range)
+- To exclude error code 7 ("Terminate specification found in a Repgen"): `;ERROR_LEVEL 1-6,8-10`
+- To trap all errors (recommended for new installations): `;ERROR_LEVEL 1-255`
+
+:::
 
 :::tip Example
 
+```
 ;skip checking for error code 9
-
-%JOBFILE TURN_OFF_CHECKING
+;ERROR_LEVEL 1-8, 10
 
 %PROGRAM REPGEN
-
 prompt : answer
 
+;ERROR_LEVEL 1-10
+```
+
+:::
+
+:::warning
+
+Do not use the Episys text editor to modify job files that contain RSJ directives. The Episys editor reorders comment lines, which corrupts the directive ordering. Use a UNIX editor instead, or place RSJ directives in separate job files that you include via `%JOBFILE`.
+
+:::
+
+:::tip Recommended approach
+
+Place directives in separate job files:
+
+```
+%JOBFILE TURN_OFF_CHECKING
+%PROGRAM REPGEN
+prompt : answer
 %JOBFILE TURN_ON_CHECKING
+```
 
 :::
 
 ## FAIL_ON_PERSISTENT_EDITFILE
 
-FAIL_ON_PERSISTENT_EDITFILE can be set in the SMA_DEFAULTS file (or set in any batch file - like the other RSJ directives to selectively turn on and off this features). The default value is "false." If the job to be executed requires EDITFILE.DATA, but EDITFILE.DATA exists, RSJ will wait for MINUTES_TO_WAIT_FOR_EDITFILE (default is 10 minutes). After this time has elapsed (and if EDITFILE.DATA still exists), RSJ will fail if this setting is true. If this setting is false, it will operate as it has in the past and simply move the EDITFILE.DATA to a temporary area.
+`FAIL_ON_PERSISTENT_EDITFILE` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `false`.
+
+If the job requires `EDITFILE.DATA` but `EDITFILE.DATA` already exists, RSJ waits for `MINUTES_TO_WAIT_FOR_EDITFILE` (default 10 minutes). After the wait time elapses:
+- If `FAIL_ON_PERSISTENT_EDITFILE` is `true`, RSJ fails.
+- If `FAIL_ON_PERSISTENT_EDITFILE` is `false`, RSJ moves `EDITFILE.DATA` to a temporary location and continues.
 
 :::tip Example
 
+```
 ; FAIL_ON_PERSISTENT_EDITFILE true | false
+```
 
 :::
 
 ## JAVA_HOME
 
-JAVA_HOME can only be set in the SMA_DEFAULTS file. The environment variable called JAVA_HOME will be set to this value and JAVA_HOME/bin will be added to the path. The default value is /usr/java6.
+`JAVA_HOME` can only be set in the `SMA_DEFAULTS` file. Setting this directive sets the `JAVA_HOME` environment variable and adds `JAVA_HOME/bin` to the path. The default value is `/usr/java6`.
 
 :::tip Example
 
+```
 ; JAVA_HOME "/usr/java7"
+```
 
 :::
 
 ## MAX_EXCEPTIONS
 
-:::info Note 
+:::info Note
 
-The MAX_EXCEPTIONS directive is only available from SMA Technologies. Symitar does not support the MAX_EXCEPTIONS directive.
+The `MAX_EXCEPTIONS` directive is only available from SMA Technologies. Symitar does not support the `MAX_EXCEPTIONS` directive.
 
-::: 
+:::
 
-MAX_EXCEPTIONS is the maximum number of exceptions pages that are allowed. If the number of exception pages goes over this limit, the job will be terminated. The max exceptions directive is inserted into a comment of a Symitar Batch Job. It has the following form:
+`MAX_EXCEPTIONS` is the maximum number of exception pages allowed. If the number of exception pages exceeds this limit, RSJ terminates the job. Insert the directive as a comment in a Symitar batch job file.
 
-```;MAX_EXCEPTIONS 8```
+```
+;MAX_EXCEPTIONS 8
+```
 
-* The default is 0 (any exceptions will cause the job to terminate).
-* The current best practice is to only put MAX_EXCEPTIONS checking at the beginning of a job file.
-* This allows everyone to easily determine what level of exception checking is in effect.
-* The other common option is to bracket a program with MAX_EXCEPTIONS statements.
+- The default is `0` (any exceptions cause the job to terminate).
+- The current best practice is to place `MAX_EXCEPTIONS` checking only at the beginning of a job file.
 
-:::tip Common Use Cases
+:::tip Common use cases
 
-* To disable exception checking for a job: `;MAX_EXCEPTIONS 2000000000`
-* To set a reasonable limit based on your credit union's normal processing: `;MAX_EXCEPTIONS 20` (for example, if 10-20 pages is normal for ACH posting)
+- To disable exception checking: `;MAX_EXCEPTIONS 2000000000`
+- To set a reasonable limit: `;MAX_EXCEPTIONS 20` (for example, if 10–20 exception pages is normal for ACH posting)
 
 :::
 
 :::tip Example
 
+```
 ;skip exception checking
-
 ;MAX_EXCEPTIONS 2000000
 
 %PROGRAM REPGEN
-
 prompt : answer
 
 ;MAX_EXCEPTIONS 0
-
-::: 
-
-While the above syntax is technically correct, it can fail if users use a Symitar editor to edit the job file (the comment lines containing RSJ commands will be reordered). The MAX_EXCEPTIONS commands should be placed into separate files (TURN_OFF_CHECKING and TURN_ON_CHECKING) so that the Episys job file editors cannot reorder the comment lines.
-
-:::tip Example
-
-;skip checking for MAX_EXCEPTIONS
-
-%JOBFILE TURN OFF_CHECKING
-
-%PROGRAM REPGEN
-
-prompt : answer
-
-%JOBFILE TURN_ON_CHECKING
-
-TURN_OFF_CHECKING
-
-;MAX_EXCEPTIONS 2000000
-
-TURN_ON_CHECKING
-
-;MAX_EXCEPTIONS 0
+```
 
 :::
 
 ## MINUTES_TO_WAIT_FOR_EDITFILE
 
-MINUTES_TO_WAIT_FOR_EDITFILE can be set in the SMA_DEFAULTS file (or set in any batch file - like the other RSJ directives to set the value for this feature). The default value is "10 minutes". If the job to be executed requires EDITFILE.DATA, but EDITFILE.DATA exists, RSJ will wait for MINUTES_TO_WAIT_FOR_EDITFILE (default is 10 minutes). After this time has elapsed (and if EDITFILE.DATA still exists), RSJ will either fail (if FAIL_ON_PERSISTENT_EDITFILE is true) or move the EDITFILE.DATA file to a temporary area (if FAIL_ON_PERSISTENT_EDITFILE is set to false).
+`MINUTES_TO_WAIT_FOR_EDITFILE` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `10` minutes.
+
+If the job requires `EDITFILE.DATA` but `EDITFILE.DATA` already exists, RSJ waits for this many minutes before either failing or moving the file, depending on the `FAIL_ON_PERSISTENT_EDITFILE` setting.
 
 :::tip Example
 
-; MINUTES_TO_WAIT_FOR_EDIT_FILE     5 
+```
+; MINUTES_TO_WAIT_FOR_EDIT_FILE     5
+```
 
 :::
 
@@ -200,238 +207,183 @@ MINUTES_TO_WAIT_FOR_EDITFILE can be set in the SMA_DEFAULTS file (or set in any 
 
 :::info Note
 
-Restart points are only available from SMA Technologies. Symitar does not support them and has not implemented them.
+Restart points are only available from SMA Technologies. Symitar does not support them.
 
 :::
 
-A restart point allows a user to restart a job at a particular point (in the event of failure). A restart point can be specified in a nested job which enables jobs to be ignored before the restart point and continue with the rest of the processing. A restart point is inserted as a comment in a Symitar Batch Job. It has the following form:
+A restart point allows you to restart a job at a particular point after a failure. A restart point can be specified in a nested job, which enables jobs to be skipped up to the restart point. Insert the restart point as a comment in a Symitar batch job file.
 
-```;RESTART_POINT some_name_n```
+```
+;RESTART_POINT some_name_n
+```
 
 :::info Note
 
-Spelling and Capitalization are very important. RSJ looks for the exact match on Restart Points. If an invalid restart_point is specified on the command line, no programs will be run and the job will return an error. Avoid the use of spaces and tabs in a restart_point name.
+Spelling and capitalization are important. RSJ looks for an exact match on restart points. If an invalid restart point is specified on the command line, no programs run and the job returns an error. Avoid spaces and tabs in restart point names.
 
 :::
 
-* It is important that all restart points be unique in all nested jobs. SMA Technologies will only find the very first restart point of the specified name. Any duplicate restart point names will be ignored even if they are in different files.
-
-* After running a job with a restart point, it is advisable to remove the restart point from the job. This will prevent a possible "name collision" should the job have a failure in another nested procedure sometime in the future.
-White pencil icon on green circular background	
+- All restart points must be unique across all nested jobs. RSJ only finds the first restart point with the specified name. Duplicates are ignored even in different files.
+- After running a job with a restart point, remove the restart point from the job to prevent name collisions in future failures.
 
 :::tip Example
 
-### Sample Job File (REPGEN.JOB)
+**Sample job file (REPGEN.JOB):**
 
+```
 ;RESTART_POINT REPGEN2
-
 %PROGRAM REPGEN
-
 prompt : answer
-
 prompt2: answer
- 
-### Sample OpCon Command Line:
+```
 
+**Sample OpCon command line:**
+
+```
 /ops/bin/RSJ 000 REPGEN.JOB REPGEN2
+```
 
 :::
- 
 
-While the above syntax is technically correct, it can fail if users use a Symitar editor to edit the job file (the comment lines containing RSJ commands will be reordered). The RESTART_POINT command should be placed into a separate file (PERMANENT_RESTART_POINT) so that the Episys job file editors cannot reorder the comment lines.
-
- 
+To use a permanent restart point, place it in a separate file and include it via `%JOBFILE`:
 
 :::tip Example
 
-### Sample Job (PERMANENT_RESTART_POINT.JOB)
-
+**PERMANENT_RESTART_POINT.JOB:**
+```
 ;RESTART_POINT PERMANENT_RESTART_POINT
+```
+
+**JOB_THAT_NEEDS_RESTART_POINT.JOB:**
+```
+%JOBFILE PERMANENT_RESTART_POINT.JOB
+%PROGRAM REPGEN
+prompt : answer
+prompt2: answer
+```
 
 :::
-
-:::tip Example
-
-### Sample Job (JOB_THAT_NEEDS_RESTART_POINT.JOB)
-
-%JOBFILE PERMANENT_RESTART_POINT.JOB
-
-%PROGRAM REPGEN
-
-prompt : answer
-
-prompt2: answer
-
-::: 
-
-This technique will allow the use of a permanent restart point.
 
 ## SCRIPT
 
 :::info Note
 
-The SCRIPT directive is only available from SMA Technologies. Symitar does not support the SCRIPT directive.
+The `SCRIPT` directive is only available from SMA Technologies. Symitar does not support the `SCRIPT` directive.
 
-::: 
+:::
 
-SCRIPT is a directive that allows users to execute external scripts and programs inside a Symitar jobfile. The script directive is inserted into a comment of a Symitar Batch Job. It has the following form:
+`SCRIPT` allows you to run external scripts and programs inside a Symitar job file. Insert the script directive as a comment.
 
-```;SCRIPT program arguments```
+```
+;SCRIPT program arguments
+```
 
-* The default return code will be examined to see if it is zero. Any non-zero exit code will cause RSJ to terminate.
-
-* The program/script should be tested outside of the Symitar environment to make sure that it is functioning properly.
+- The program's exit code is checked. Any non-zero exit code causes RSJ to terminate.
+- Test the program outside the Symitar environment before using it in a job file.
 
 :::tip Example
 
+```
 %JOBFILE SOME_SCRIPT_JOB
 
 File: SOME_SCRIPT_JOB
-
 ;SCRIPT program arguments
-
-::: 
-
-While the above syntax is technically correct, it can fail if users use a Symitar editor to edit the job file (the comment lines containing RSJ commands will be reordered). The SCRIPT command should be placed into a separate file (SCRIPT.JOB) so that the Episys job file editors cannot reorder the comment lines.
-
-:::tip Example
-
-### Sample Job (SCRIPT.JOB)
-
-;SCRIPT SOME_SPECIAL_SCRIPT
-
-::: 
-
-:::tip Example
-
-### Sample Job (JOB_THAT_NEEDS_SCRIPTS.JOB)
-
-%JOBFILE SCRIPT.JOB
-
-%PROGRAM REPGEN
-
-prompt : answer
-
-prompt2: answer
+```
 
 :::
 
-This technique will allow the use of a permanent script command in a job file.
+Place `SCRIPT` commands in separate job files to protect them from Episys editor reordering.
 
 ## SEND_OUTPUT_TO_QOUT
 
-SEND_OUTPUT_TO_QOUT can be set in the SMA_DEFAULTS file (or set in any batch file - like the other RSJ directives to selectively turn on and off this feature). The default value is "false."
+`SEND_OUTPUT_TO_QOUT` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `false`. SAJ always sends output to QOUT and does not support a directive to control this.
 
 :::tip Example
 
+```
 ;SEND_OUTPUT_TO_QOUT true | false
+```
 
 :::
 
-SAJ always sends the output to QOUT. There is no directive to control this.
+## Generalized exception handling — EXCEPTION_REPORT
 
-## Generalized Exception Handling - EXCEPTION_REPORT
+`EXCEPTION_REPORT` causes RSJ to terminate if any matching report has too few or too many pages. The report name may contain a wildcard `*` to match multiple reports. Once defined, this directive is active for the remainder of the job file or until an `EXCEPTION_REPORT_CLEAR` directive is encountered.
 
-EXCEPTION_REPORT is the command to cause RSJ to terminate if any matching report has too few pages in it or too many pages in it. The report name may contain a wildcard "*" to match multiple reports. Once an EXCEPTION_REPORT directive is defined, it is active for the remainder of the job file or until an EXCEPTION_REPORT_CLEAR directive is encountered. This command allows for the matching of any report whereas the MAX_EXCEPTIONS directive only matches EDIT exceptions. Symitar has at least seven different forms for exceptions which is why a generalized approach is necessary to allow control over all possible exception forms.
+```
+;EXCEPTION_REPORT "REPORT NAME" #_of_pages LT|LE|GT|GE
+```
 
-* The exception_report directive is inserted into a comment of a Symitar Batch Job and has the form:
-
-```;EXCEPTION_REPORT "REPORT NAME" #_of_pages LT|LE|GT|GE```
-
-:::info Note 
-
-The quotes around report name are mandatory. There are no defaults for this command because it is turned off by default.
-
-:::
-
-* The first argument is the name of the report(s) to match. The quotes around the report name are mandatory. By default, if a "*" is encountered it is assumed to be a wildcard that matches any characters. If the "*" is actually part of the report name place a "\" in front of the "*" (i.e., "\*") - this turns off the wildcard matching.
-
-* The second argument is the number of pages in the report that should be used in the comparison (i.e., too few pages or too many pages).
-
-* The third argument is one of four comparison operators (LT, LE, GT, GE) which is the operator to use in the number of pages comparison. LT is the less than operator. LE is the less than or equal operator. GT is the greater than operator.
-
-* The EXCEPTION_REPORT directive is only available from SMA Technologies, Symitar does not support the EXCEPTION_REPORT directive.
+- The first argument is the report name. Quotes are mandatory. Use `\*` to match a literal asterisk.
+- The second argument is the page count for the comparison.
+- The third argument is one of four comparison operators: `LT` (less than), `LE` (less than or equal), `GT` (greater than), `GE` (greater than or equal).
 
 :::info Note
 
-The quotes around report name are mandatory. There are no defaults for this command because it is turned off by default.
+The quotes around the report name are mandatory. This directive is turned off by default.
 
 :::
 
-* The current best practice is to only put EXCEPTION_REPORT checking at the beginning of a job file. This allows everyone to easily determining what level of exception checking is in effect.
-
-
 :::tip Example
 
+```
 ;Error if any report name ending in EXCEPTION is >= 10 pages
-
 ;EXCEPTION_REPORT "* EXCEPTION" 10 GE
 
 ;Error if any report name starting with EXCEPTION is >= 10 pages
-
 ;EXCEPTION_REPORT "EXCEPTION *" 10 GE
 
 ;Error if report TEST is < 10 pages
-
 ;EXCEPTION_REPORT "TEST" 10 LT
+```
 
 :::
 
-## Generalized Exception Handling - EXCEPTION_REPORT_CLEAR
+## Generalized exception handling — EXCEPTION_REPORT_CLEAR
 
-EXCEPTION_REPORT_CLEAR is the command to cause RSJ to clear or "forget" all previous EXCEPTION_REPORT directives. The exception_report_clear directive is inserted into a comment of a Symitar Batch Job and has the form:
+`EXCEPTION_REPORT_CLEAR` clears all previous `EXCEPTION_REPORT` directives.
 
-```;EXCEPTION_REPORT_CLEAR```
-
-* There are no defaults for this command because it is turned off by default.
-
-* The EXCEPTION_REPORT_CLEAR directive is only available from SMA Technologies. Symitar does not support the EXCEPTION_REPORT_CLEAR directive.
+```
+;EXCEPTION_REPORT_CLEAR
+```
 
 :::tip Example
 
+```
 ;Clear all previous EXCEPTION_REPORT directives
-
 ;EXCEPTION_REPORT_CLEAR
+```
 
 :::
 
-* RSJ Default Values are:
-    * `;ERROR_LEVEL 1-255`
-    * `;MAX_EXCEPTIONS 0`
+**RSJ default values:**
+- `;ERROR_LEVEL 1-255`
+- `;MAX_EXCEPTIONS 0`
 
-## Best Practices for Error Checking
+## Best practices for error checking
 
-When configuring error handling with RSJ, it's important to understand how `ERROR_LEVEL` and `MAX_EXCEPTIONS` work together:
+### Understanding error codes and exceptions
 
-### Understanding Error Codes and Exceptions
+- **Error codes** are return codes from Symitar programs. Each credit union determines which error code returns are acceptable for their environment.
+- **Exception reports** are pages in the output that indicate processing problems. Every program has its own exception reports, and the number of exception pages indicates severity.
 
-* **Error codes** are return codes from Symitar programs. Each program has its own error code returns, and each credit union will know what acceptable and unacceptable error code returns are for their environment.
-* **Exception reports** are pages in the output that indicate problems during processing. Every program has its own exception report(s), and the number of exception pages can indicate different severity levels.
-
-### Setting Appropriate Limits
+### Setting appropriate limits
 
 When setting `MAX_EXCEPTIONS`, consider:
 
-* **Normal operations**: What is the average number of exception pages for this job? For example, on a normal day, ACH posting might have 10-20 pages of exceptions, which would be acceptable.
-* **Problem indicators**: If 30-40 pages of exceptions appear, this might indicate something has been double-posted or an old file is being re-processed.
-* **Credit union size**: The number of allowable exceptions is different for each credit union, and as the credit union changes size, the number of exceptions will change.
-* **Balancing act**: It is possible to set `MAX_EXCEPTIONS` to something very large (like 2,000,000,000), but then a valuable error diagnostic would be lost.
-
-### Using ERROR_LEVEL and MAX_EXCEPTIONS Together
+- **Normal operations**: What is the average number of exception pages for this job? For example, on a normal day ACH posting might have 10–20 pages of exceptions.
+- **Problem indicators**: If 30–40 pages of exceptions appear, it may indicate a double-posted file or an old file being re-processed.
+- **Credit union size**: The number of allowable exceptions differs per credit union and changes as the credit union grows.
 
 :::tip Recommendation
 
-It is recommended to always use the `ERROR_LEVEL` and `MAX_EXCEPTIONS` commands together. The reason is that RSJ will always check both exceptions and the program return code. Using both provides comprehensive error detection.
+Always use `ERROR_LEVEL` and `MAX_EXCEPTIONS` together. RSJ checks both exceptions and the program return code, so using both provides comprehensive error detection.
 
 :::
 
-### Adjusting Over Time
+### Recommended configuration
 
-Initial testing will not reveal all possible cases, so these limits will need to be adjusted as new cases reveal themselves. When new versions of Episys evolve, error codes may slightly change, so error levels should be revisited.
-
-### Recommended Configuration
-
-For most installations, a good starting point in the `SMA_DEFAULTS` file would be:
+For most installations, a good starting point in the `SMA_DEFAULTS` file is:
 
 ```
 ;ERROR_LEVEL 1-255
@@ -439,55 +391,55 @@ For most installations, a good starting point in the `SMA_DEFAULTS` file would b
 ;DIE_NO_ERROR_CODE TRUE
 ```
 
-Then adjust `MAX_EXCEPTIONS` per job or per job type based on your credit union's normal processing patterns.
+Adjust `MAX_EXCEPTIONS` per job or job type based on your credit union's normal processing patterns.
 
 ## DIE_NO_ERROR_CODE
 
-The directive DIE_NO_ERROR_CODE directs RSJ to stop processing if no Symitar error code is found. There are some Symitar programs that die unexpectedly without producing an error code and others that do not output error codes in all cases. This directive was requested by Symitar so all shops are highly encouraged to use it. The recommended place for this directive is in the SMA_DEFAULTS file. A value of TRUE turns the logic on and a value of FALSE turns the logic off. The default value is TRUE.
+`DIE_NO_ERROR_CODE` directs RSJ to stop processing if no Symitar error code is found. Some Symitar programs die unexpectedly without producing an error code. Symitar recommends enabling this directive for all installations. The default value is `TRUE`.
 
-Usage:
-
-```;DIE_NO_ERROR_CODE [TRUE|FALSE]```
+```
+;DIE_NO_ERROR_CODE [TRUE|FALSE]
+```
 
 ## FATAL_MESSAGE
 
-The directive FATAL_MESSAGE adds a new string that RSJ will search for to determine if processing should stop. This capability is to cover situations where Symitar has an error message that is not caught by RSJ error handling (i.e., a new release or the discovery of a new error message that is not handled properly). Normally, this directive should be placed in the SMA_DEFAULTS file. Note that these messages are case-sensitive. If someone comes across a new error message that should be caught, please send it to SMA Technologies.
+`FATAL_MESSAGE` adds a string that RSJ searches for to determine whether processing should stop. This covers situations where a Symitar error message is not caught by standard RSJ error handling. These messages are case-sensitive.
 
-The following messages are turned on by default in RSJ (these messages are recommended to be caught by Symitar):
+The following messages are enabled by default:
 
-* This batch stream is now terminated
-* Inconsistent answers to batch questions
-* Entire Batch Job File Terminated!
-* CURRENT BATCH JOB TERMINATED
-* REMAINDER OF BATCH JOB FILE TERMINATED
-* System Is Not Available
-* Error 13: Permission denied
-* System logon problem
-* Unspecified error result code of
-* DISKBACKUP FAILED
-* Terminated remainder of batch job
+- `This batch stream is now terminated`
+- `Inconsistent answers to batch questions`
+- `Entire Batch Job File Terminated!`
+- `CURRENT BATCH JOB TERMINATED`
+- `REMAINDER OF BATCH JOB FILE TERMINATED`
+- `System Is Not Available`
+- `Error 13: Permission denied`
+- `System logon problem`
+- `Unspecified error result code of`
+- `DISKBACKUP FAILED`
+- `Terminated remainder of batch job`
 
-Usage:
-
-```;FATAL_MESSAGE "message string"```
+```
+;FATAL_MESSAGE "message string"
+```
 
 ## FATAL_MESSAGE_CLEAR
 
-The directive FATAL_MESSAGE_CLEAR removes all fatal error messages (including the default ones). This allows credit unions to fully customize error handling. Normally, this directive should be placed in the SMA_DEFAULTS file. It is highly recommended that this directive not be used. If it is used, then the FATAL_MESSAGE directive must be used to add any desired Symitar messages to stop RSJ upon since there won't be any messages left to stop on.
+`FATAL_MESSAGE_CLEAR` removes all fatal error messages, including the defaults. This allows complete customization of error handling. If you use this directive, you must use `FATAL_MESSAGE` to add any desired stop messages, since no messages remain after the clear.
 
-Usage:
-
-```;FATAL_MESSAGE_CLEAR```
+```
+;FATAL_MESSAGE_CLEAR
+```
 
 ## Troubleshooting RSJ
 
-### Diagnosing Job Failures
+### Diagnosing job failures
 
-When a job fails, RSJ provides diagnostic information in the job output. To determine why a job failed:
+When a job fails, RSJ provides diagnostic information in the job output. To determine why a job failed, complete the following steps:
 
-1. **Look at the bottom of the job output** - RSJ always outputs the reason why it stopped processing the jobfile. Look for SMA Technologies' output lines, which always begin with "DEBUG", "INFO", "WARN", or "FATAL" followed by the date and a message.
+1. Look at the bottom of the job output. RSJ always outputs the reason it stopped processing the job file. Look for SMA Technologies output lines, which always begin with `DEBUG`, `INFO`, `WARN`, or `FATAL` followed by the date and a message.
 
-   :::tip Example RSJ Output Lines
+   :::tip Example RSJ output lines
 
    ```
    FATAL Thu Sep 6 11:55:01 2007 FATAL - TOO MANY EXCEPTIONS in EXCEPTION REPORT
@@ -496,73 +448,51 @@ When a job fails, RSJ provides diagnostic information in the job output. To dete
 
    :::
 
-2. **Identify which file and program aborted**:
-   * RSJ always outputs (prints) the file that it has opened and always outputs a message when it finishes processing a file.
-   * RSJ always outputs (prints) the name of the executable that it is executing and in what job file the executable is located.
-   * For nested jobs, you can trace through SMA Technologies' messages to see what files have been opened and closed at any point in the job.
+2. Identify which file and program aborted:
+   - RSJ always outputs the name of the file it opened and outputs a message when it finishes processing a file.
+   - RSJ always outputs the name of the program it is running and which job file it is in.
+   - For nested jobs, trace through SMA Technologies messages to see which files have been opened and closed.
 
-3. **The easiest way to view job output** is through JORS (right-click on the job and select "View Job Output" in the OpCon Schedule Operations screen).
+3. The easiest way to view job output is through JORS — select **View Job Output** on a job in the OpCon Schedule Operations screen.
 
-### Why Jobs Run in Other Environments But Not RSJ
+### Why jobs run in other environments but not RSJ
 
-If a jobfile runs in `ssj`/`AutoBatch` or interactively but not in RSJ:
+If a job file runs in `ssj`, AutoBatch, or interactively but not in RSJ:
 
-* **AutoBatch and ssj do absolutely no error checking** - If an error exists, these products will continue processing the jobfile. RSJ will stop the moment it detects an error.
-* **Episys does absolutely no error checking** on a running job - If an error exists, Episys will continue processing the jobfile. RSJ will stop the moment it detects an error.
-* **Common causes**: There is an issue in the jobfile, or there are too many exceptions. Look at the bottom of the output file to view the reason that RSJ stopped.
+- **AutoBatch and ssj do not perform error checking.** If an error exists, these tools continue processing the job file. RSJ stops the moment it detects an error.
+- **Episys does not perform error checking on a running job.** RSJ stops on the first detected error.
+- **Common causes**: There is an issue in the job file, or there are too many exceptions. Look at the bottom of the output file to see why RSJ stopped.
 
 :::warning
 
-**Do not use RSJ and AutoBatch together**, and **do not use RSJ and ssj together**. This is highly discouraged. Operational issues will surface. RSJ is designed to eliminate these operational issues. ssj depends upon AutoBatch, therefore it is unsafe to run with RSJ.
+Do not use RSJ and AutoBatch together, and do not use RSJ and ssj together. Operational issues will surface. RSJ is designed to eliminate these operational issues. ssj depends on AutoBatch, so it is unsafe to run with RSJ.
 
 :::
 
-### Troubleshooting RSJ Directives
+### Troubleshooting RSJ directives
 
 If RSJ appears to be ignoring `MAX_EXCEPTIONS`, `ERROR_LEVEL`, `SCRIPT`, or `RESTART_POINTS` directives, check the following:
 
-### Common Issues
+1. **Double semicolons**: A semicolon was included at the beginning of the comment command, producing `;;` at the start of the line. Symitar interfaces add an additional `;` before the actual comment, resulting in `;;Command`, which RSJ does not recognize. When using the Episys text editor, do not add a leading semicolon.
+2. **Incorrect syntax**: Recheck the exact syntax carefully.
+3. **Episys editor reordering**: All Episys job file editors move comment lines to the top of the file, producing a job file that RSJ cannot process correctly. Use a UNIX editor for all job files that contain RSJ directives.
 
-1. **Double semicolons**: A semicolon (`;`) was included at the beginning of the comment command, which produces `;;` at the start of the line. Symitar interfaces will add an additional `;` before the actual comment. The actual command in the file becomes `;;Command` which will not be picked up by RSJ. When using the Episys text editor, a semicolon is not required.
+### Recommended solution
 
-2. **Incorrect syntax**: The exact syntax was not used for the command. Recheck the syntax carefully.
-
-3. **Episys editor reordering**: Using Episys to modify the job file is not recommended. All Episys job file editors will move any comment lines around in the file, producing a job file that is totally incorrect. **Do not use Episys editors – use a UNIX editor instead.**
-
-### Recommended Solution
-
-If you're using Episys to modify job files, try putting the RSJ commands into separate job files and including them via `%JOBFILE`:
+Place RSJ commands in separate job files and include them via `%JOBFILE`:
 
 :::tip Example
 
-Instead of placing directives directly in the main job file:
-
-```
-File: MAIN_JOB
-;MAX_EXCEPTIONS 20000000
-%PROGRAM CLOSEDAY
-```
-
-Create separate files:
-
-**TURN_OFF_CHECKING:**
-```
-;MAX_EXCEPTIONS 20000000
-```
-
-**TURN_ON_CHECKING:**
-```
-;MAX_EXCEPTIONS 0
-```
-
-**MAIN_JOB:**
 ```
 %JOBFILE TURN_OFF_CHECKING
 %PROGRAM CLOSEDAY
 %JOBFILE TURN_ON_CHECKING
+
+TURN_OFF_CHECKING:
+;MAX_EXCEPTIONS 20000000
+
+TURN_ON_CHECKING:
+;MAX_EXCEPTIONS 0
 ```
 
 :::
-
-This technique prevents Episys editors from reordering the comment lines containing RSJ commands.
-

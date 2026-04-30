@@ -1,21 +1,62 @@
-# FAILOVER/FAILOVERD
+---
+title: RSJ failover
+description: "Configure RSJ and OpCon to work correctly with the Symitar FAILOVER system when swapping primary and secondary Episys servers."
+tags:
+  - Conceptual
+  - System Administrator
+  - Agents
+---
 
-The Symitar FAILOVER system allows a user to swap a primary and secondary machine if the primary machine becomes unavailable for some reason. Symitar has four main FAILOVER configurations.
+# RSJ failover
 
-It is not required for RSJ or OpCon to have either the FAILOVER macro or FAILOVERD daemon running or configured. If it is desired to configure one or both of these items, it is imperative that the complete FAILOVER system be implemented as described in "Episys Failover System Implementation – A technical discussion for implementing the Episys Failover System for disaster preparedness 10Nov02". 
+## What is it?
 
-This document is available on the Symitar web site for customers. Contact Symitar for assistance in configuring your FAILOVER systems. Failure to fully configure the FAILOVER systems will cause RSJ not to run. 
+The Symitar FAILOVER system allows you to swap a primary and secondary machine when the primary becomes unavailable. RSJ and OpCon are not required to use the FAILOVER system, but when it is configured, specific steps must be followed to ensure RSJ continues to run correctly after a failover event.
 
-An additional restriction is that both the primary and secondary systems have all of their RSJ licenses in a single file on both systems. Failure to ensure that both the primary and secondary servers have their licenses on both systems will cause RSJ not to run after the FAILOVER macro runs.
+- Use this guidance when your site has implemented the Symitar FAILOVER system and needs to ensure RSJ licenses and OpCon schedules are correctly managed during a failover.
+- Review the FAILOVER configuration requirements before enabling automated FAILOVERD, as SMA Technologies recommends manual failover execution to avoid undetected switchovers in OpCon.
 
-Additional consideration must be given to OpCon in the FAILOVER system. It is highly recommended that the Symitar server be brought down in OpCon before the FAILOVER macro is run. 
+## FAILOVER configuration requirements
 
-Additionally, at a minimum, all schedules for the Symitar machine should be placed on hold. This prevents OpCon from inadvertently running jobs on the wrong machine. 
+RSJ and OpCon do not require either the FAILOVER macro or the FAILOVERD daemon to be running or configured. If you want to configure one or both, you must implement the complete FAILOVER system as described in the Symitar document "Episys Failover System Implementation — A technical discussion for implementing the Episys Failover System for disaster preparedness 10Nov02." This document is available on the Symitar website. Contact Symitar for assistance in configuring your FAILOVER systems.
 
-It is the users' responsibility to make sure that OpCon does not run jobs on the wrong machine once the FAILOVER macro has been run. It is highly advisable to hold all schedules until it is determined exactly what needs to run or be re-run.
- 
-Users must also take into account what happens when a program or a sequence of programs are interrupted because of the FAILOVER macro. The worst case scenario is that OpCon has just sent a job or series of job to the primary machine and the FAILOVER macro is activated.
+:::warning
 
-Users must also take into account what happens when a program or sequence of programs were not run on the secondary machine. Users may need to re-run multiple jobs and/or schedules.
+Failure to fully configure the FAILOVER systems causes RSJ not to run.
 
-It is SMA Technologies' recommendation that the FAILOVERD not be run, but rather be run manually since there is no notification facility to OpCon that the primary machine has been replaced with the secondary machine.
+:::
+
+## RSJ license requirements
+
+Both the primary and secondary systems must have all RSJ licenses in a single file on both systems. Failure to ensure that both the primary and secondary servers have their licenses on both systems causes RSJ not to run after the FAILOVER macro runs.
+
+## OpCon schedule management
+
+When running a failover, complete the following steps in OpCon before running the FAILOVER macro:
+
+1. Bring down the Symitar server in OpCon.
+2. At a minimum, place all schedules for the Symitar machine on hold.
+
+These steps prevent OpCon from inadvertently running jobs on the wrong machine after the FAILOVER macro completes.
+
+You are responsible for ensuring that OpCon does not run jobs on the wrong machine once the FAILOVER macro has run. Place all schedules on hold until you have determined exactly which jobs need to run or be re-run.
+
+## Interrupted jobs
+
+Consider what happens when a program or a sequence of programs is interrupted by the FAILOVER macro. In the worst case, OpCon has just sent a job or series of jobs to the primary machine when the FAILOVER macro runs.
+
+You must also consider which programs were not run on the secondary machine. You may need to re-run multiple jobs and schedules.
+
+## FAILOVERD recommendation
+
+SMA Technologies recommends that FAILOVERD not be configured to run automatically. Run FAILOVERD manually instead, since there is no notification facility to OpCon that the primary machine has been replaced with the secondary machine. Running FAILOVERD automatically can result in OpCon continuing to send jobs to what was the primary machine without any awareness of the switchover.
+
+## Glossary
+
+**FAILOVER** — The Symitar macro that swaps the primary and secondary Episys servers during a disaster recovery event.
+
+**FAILOVERD** — The Symitar daemon that can trigger the FAILOVER macro automatically. SMA Technologies recommends running this manually rather than automatically.
+
+**Primary server** — The active Episys server under normal operating conditions.
+
+**Secondary server** — The standby Episys server that becomes active after a FAILOVER event.
