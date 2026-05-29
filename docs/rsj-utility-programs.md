@@ -192,16 +192,44 @@ Finds all possible user prompts in a nested Symitar job. Use this program to fac
 
 ## ForceLogOff
 
-Automatically logs off any user logged into a specific SYM.
+Forcibly terminates all SYMITAR console sessions on a specific SYM, then automatically kills and restarts the FrontController so that stuck consoles are cleared without manual intervention. Timestamped progress is written to stdout and captured by OpCon JORS.
 
 **Usage:** `/ops/bin/ForceLogOff SYM#`
 
-- **SYM#** — The three-digit SYM number (for example, 100).
+- **SYM#** — The three-digit SYM number (for example, 000).
 
 :::tip Example
 
 ```
 /ops/bin/ForceLogOff 000
+```
+
+:::
+
+:::warning
+
+If users are running Episys jobs interactively, running this command can lock up the database and require a SYM reload. See [Canceling an RSJ job](operations/canceling-rsj-job.md) for more information.
+
+:::
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+
+## ForceLogOffSSO
+
+Forcibly terminates all SSO-authenticated SYMITAR console sessions on a specific SYM, then automatically kills and restarts the FrontController so that stuck consoles are cleared without manual intervention. Use this script instead of [ForceLogOff](#forcelogoff) when the site uses SSO authentication. Timestamped progress is written to stdout and captured by OpCon JORS.
+
+**Usage:** `/ops/bin/ForceLogOffSSO SYM#`
+
+- **SYM#** — The three-digit SYM number (for example, 000).
+
+:::tip Example
+
+```
+/ops/bin/ForceLogOffSSO 000
 ```
 
 :::
