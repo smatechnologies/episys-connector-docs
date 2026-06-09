@@ -52,7 +52,7 @@ These variables are set by RSJ at runtime. You do not set them manually.
 
 | Variable | Purpose | Notes |
 | -------- | ------- | ----- |
-| `rsj_path` | Set by RSJ to the directory containing the RSJ binaries (typically `/ops/bin`). Read by `ExecuteAsRoot` and `ExecuteAsRootDebug` to locate the `rootInfo.encrypted` file. | RSJ sets this to `$EXE_PATH` at startup and injects it into child processes. It is not read from the `environment` file. |
+| `rsj_path` | Set by RSJ to the directory containing the RSJ binaries (typically `/ops/bin`). Read by `ExecuteAsRoot` and `ExecuteAsRootDebug` to locate the `rootInfo.encrypted` file. | RSJ sets this to the RSJ binary directory at startup and injects it into child processes. It is not read from the `environment` file. |
 
 ## Variables controlled by RSJ directives
 
@@ -62,14 +62,14 @@ These variables are set or modified by RSJ at runtime based on directives in the
 | -------- | ---------------- | ------- |
 | `JAVA_HOME` | `;JAVA_HOME "<path>"` | Sets the Java installation path. RSJ also adds `$JAVA_HOME/bin` and `$JAVA_HOME/jre/bin` to `PATH`. Default: `/usr/java6`. |
 | `PATH` | Set automatically | RSJ always prepends `/SYM/MACROS:/SYM/SYMPR:/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin` before running any job. The `JAVA_HOME` paths are appended when `JAVA_HOME` is set. |
-| `ODMDIR` | Set automatically when `ExecuteAsRoot` is in use | Required by some Symitar utilities that reference the ODM device database. Set to `/SYM/SYMxxx` when `ExecuteAsRoot` is active. |
+| `ODMDIR` | Set automatically when `ExecuteAsRoot` is in use | Required by some Symitar utilities that reference the ODM device database. RSJ sources this value from `/SYM/OP/bin/LOGON` when `ExecuteAsRoot` is active. The value varies by site — typically `/etc/objrepos`. |
 
 ## Diagnostic variables
 
 | Variable | Purpose | Notes |
 | -------- | ------- | ----- |
 | `SMA_DEBUG` | Raises the RSJ logging level to DEBUG. | Set to any non-empty value to enable verbose logging. Debug output appears in the job's batch output and is visible through JORS. Useful for diagnosing directive parsing and file-location issues. |
-| `SMA_NOSYNC` | Disables the `sync` call that RSJ makes after writing output files. | For testing environments only. When set to any non-empty value, RSJ skips the disk sync step. Do not set this variable in production — the sync step ensures that output files are flushed to disk before the job completes. |
+| `SMA_NOSYNC` | Disables the `sync` call that RSJ makes to flush data to disk. | For testing environments only. When this variable is present in the environment (any value, including empty), RSJ skips the disk sync step. Do not set this variable in production — the sync step ensures that output files are flushed to disk before the job completes. |
 
 ## FAQs
 

@@ -222,9 +222,9 @@ If users are running Episys jobs interactively, running this command can lock up
 
 Automatically logs off any users connected to a specific SYM through an SSO (Single Sign-On) session. Unlike `ForceLogOff`, this utility targets only SSO sessions — identified by `SSO=` in the process table — and leaves non-SSO interactive sessions running. Added in version 21.00.0010.
 
-**Usage:** `/ops/bin/ForceLogOffSSO SYM#[s]`
+**Usage:** `/ops/bin/ForceLogOffSSO SYM#`
 
-- **SYM#** — The three-digit SYM number (for example, `000`). You can specify multiple SYM numbers separated by spaces.
+- **SYM#** — The three-digit SYM number (for example, `000`).
 
 :::tip Example
 
@@ -416,7 +416,7 @@ Takes a list of files to be archived (via a special Symitar repgen) and moves th
 | -87 | No files found to transfer |
 | 8 | Transfer output file was not created — FTP may have failed; verify parameters manually |
 | 9 | Transfer output file is too small — FTP may have failed; verify parameters manually |
-| 10 | Transfer output contains error keywords — FTP may have failed; passive mode retry was attempted |
+| 10 | Transfer output contains error keywords — FTP may have failed; verify parameters manually |
 
 ## optical_transfer_sftp
 
