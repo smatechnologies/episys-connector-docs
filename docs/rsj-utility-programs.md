@@ -547,6 +547,8 @@ By default, `update_scf` modifies all prompts with the exact prompt text. To mod
 
 ## Legacy utilities
 
+The following utilities were superseded by `LookForReport` in version 14.00.0000 (2013). They are retained in the distribution for backward compatibility. For new jobs, use `LookForReportInRSJ` or `LookForReport` instead.
+
 ### LookForBatchOutputSequence
 
 :::info Note

@@ -51,6 +51,25 @@ You must also consider which programs were not run on the secondary machine. You
 
 SMA Technologies recommends that FAILOVERD not be configured to run automatically. Run FAILOVERD manually instead, since there is no notification facility to OpCon that the primary machine has been replaced with the secondary machine. Running FAILOVERD automatically can result in OpCon continuing to send jobs to what was the primary machine without any awareness of the switchover.
 
+## Administration
+
+**Maintaining RSJ licenses during failover:**
+Both the primary and secondary Episys servers must have current RSJ licenses installed. Verify that licenses are synchronized on both servers before enabling FAILOVER. If a license is present on only one server, RSJ stops running after a failover event.
+
+**Managing OpCon machine records after failover:**
+After a failover event, the secondary server takes on the role of the primary. Update the OpCon UNIX machine record to point to the new active server's hostname or IP address. Without this update, OpCon continues to submit jobs to the previous primary server address. Reverse this update when the original primary is restored.
+
+**Returning to normal after failover:**
+When the original primary server is restored, run the FAILOVER macro in reverse to swap back. Before doing so, repeat the OpCon schedule hold steps to prevent jobs from running on the wrong machine during the swap. Update the OpCon machine record again after the swap completes.
+
+## Security considerations
+
+**License files must be present on both servers.**
+RSJ validates its license on startup. If the license file is missing from the active server after a failover, RSJ exits without running any jobs.
+
+**Credentials and encrypted files are not replicated automatically.**
+If you use `ExecuteAsRoot`, the `rootInfo` file in `/ops/bin/` contains encrypted root credentials. Verify that this file is present and current on both the primary and secondary servers.
+
 ## Glossary
 
 **FAILOVER** — The Symitar macro that swaps the primary and secondary Episys servers during a disaster recovery event.

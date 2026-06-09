@@ -54,12 +54,12 @@ This file is read and run for **all** job files. Make sure that reasonable value
 
 ## CREATE_OPCON_REPORTS_LINKS
 
-`CREATE_OPCON_REPORTS_LINKS` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `true`.
+`CREATE_OPCON_REPORTS_LINKS` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `false` as of version 20.00.0020. In earlier versions the default was `true`.
 
 :::tip Example
 
 ```
-;CREATE_OPCON_REPORT_LINKS true | false
+;CREATE_OPCON_REPORTS_LINKS true | false
 ```
 
 :::
@@ -361,6 +361,8 @@ The quotes around the report name are mandatory. This directive is turned off by
 - `;MAX_EXCEPTIONS 0`
 
 ## Best practices for error checking
+
+The following guidelines help you configure RSJ error handling reliably across different job types and credit union environments.
 
 ### Understanding error codes and exceptions
 

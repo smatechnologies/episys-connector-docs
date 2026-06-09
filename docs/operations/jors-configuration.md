@@ -31,7 +31,13 @@ RECONFIGURE
 
 The maximum value for this configuration parameter is `2147483647`.
 
-## Workaround for older OpCon versions
+## Workaround for OpCon versions before 4.0
+
+:::note
+
+This workaround applies only to OpCon versions before 4.0. OpCon 4.0 and later do not require this workaround. If you are running a current version of OpCon, you can ignore this section.
+
+:::
 
 Versions of OpCon before 4.0 contain a bug that prevents users from viewing all job output from Symitar jobs. Most jobs display without issue, but jobs with very large output files (such as GOODNIGHT) may exceed the maximum viewable limit. To work around this issue, create a shell script:
 
