@@ -28,15 +28,31 @@ These variables are injected into the RSJ process by the LSAM each time a job ru
 | `SMA_SCHEDULE_NAME` | The name of the currently running OpCon schedule. | Used in lock file naming. |
 | `SMA_USER_SPECIFIED_JOBNAME` | The job name as specified in the OpCon job definition. | Used in lock file naming. Helps identify which job holds a lock when another job is waiting. |
 | `SMA_JOBNAME` | The job name used for the OpCon UI status display. | Passed to `sma_status` to update the 20-character status field visible in the OpCon interface. |
-| `SAM_SOCKET` | The socket path used by the OpCon dispatcher. | Used by `rsj_command` (versions prior to 19.00.0500) to send events to the OpCon SAM. In version 19.00.0500 and later, RSJ calls `sma_command` directly from `SMA_BINDIR` and no longer uses `rsj_command`. |
+| `SAM_SOCKET` | The socket path used by the OpCon dispatcher. | Used by `rsj_command` (versions prior to 19.00.0500) to send events to the OpCon SAM. In version 19.00.0500 and later, RSJ calls `sma_command` directly from `SMA_BINDIR` and no longer uses `rsj_command`. The `rsj_command` and `rsj_status` binaries are still included in the distribution for backward compatibility but are not called by current RSJ versions. |
 
 ## Variables set in the environment file
 
-The RSJ `environment` file is located at `/ops/bin/environment`. It is read by the RSJ binary wrapper before executing the Perl script. Edit this file to change the values for your installation.
+The RSJ `environment` file is located at `/ops/bin/environment`. It is read by the RSJ binary wrapper before executing the Perl script. The file sets the `PATH` and `ENV` variables used for every RSJ job. The current content of the file is:
 
-| Variable | Purpose | Default | Notes |
-| -------- | ------- | ------- | ----- |
-| `rsj_path` | Path to the RSJ binary directory. Used by `ExecuteAsRoot` to locate RSJ binaries during root-elevation operations. | `/ops/bin` | Must match the actual installation path. |
+```
+PATH=/SYM/MACROS:/SYM/SYMPR:/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin:/usr/java11_64/bin:/usr/java11_64/jre/bin:/SYM/OP/bin
+ENV=/SYM/OP/bin/ENVSET
+```
+
+The Java 11 paths (`/usr/java11_64/bin`, `/usr/java11_64/jre/bin`) were added in version 22.00.0000 to resolve `SYM is in an unknown state` errors. The `ENV` variable points to the Symitar environment initialization script at `/SYM/OP/bin/ENVSET`.
+
+| Variable | Purpose | Notes |
+| -------- | ------- | ----- |
+| `PATH` | Sets the executable search path for every RSJ job. | Includes Symitar macro and program directories, standard UNIX paths, Java 11 binaries, and the Symitar OP directory. Edit this file only if your installation uses a non-standard Java path. |
+| `ENV` | Points to the Symitar environment initialization script. | Loaded by the Korn shell before each job. If this file does not exist at your site, the `ENV` line can be removed from the `environment` file. |
+
+## Variables set dynamically by RSJ
+
+These variables are set by RSJ at runtime. You do not set them manually.
+
+| Variable | Purpose | Notes |
+| -------- | ------- | ----- |
+| `rsj_path` | Set by RSJ to the directory containing the RSJ binaries (typically `/ops/bin`). Read by `ExecuteAsRoot` and `ExecuteAsRootDebug` to locate the `rootInfo.encrypted` file. | RSJ sets this to `$EXE_PATH` at startup and injects it into child processes. It is not read from the `environment` file. |
 
 ## Variables controlled by RSJ directives
 
@@ -48,11 +64,12 @@ These variables are set or modified by RSJ at runtime based on directives in the
 | `PATH` | Set automatically | RSJ always prepends `/SYM/MACROS:/SYM/SYMPR:/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin` before running any job. The `JAVA_HOME` paths are appended when `JAVA_HOME` is set. |
 | `ODMDIR` | Set automatically when `ExecuteAsRoot` is in use | Required by some Symitar utilities that reference the ODM device database. Set to `/SYM/SYMxxx` when `ExecuteAsRoot` is active. |
 
-## Diagnostic variable
+## Diagnostic variables
 
 | Variable | Purpose | Notes |
 | -------- | ------- | ----- |
 | `SMA_DEBUG` | Raises the RSJ logging level to DEBUG. | Set to any non-empty value to enable verbose logging. Debug output appears in the job's batch output and is visible through JORS. Useful for diagnosing directive parsing and file-location issues. |
+| `SMA_NOSYNC` | Disables the `sync` call that RSJ makes after writing output files. | For testing environments only. When set to any non-empty value, RSJ skips the disk sync step. Do not set this variable in production — the sync step ensures that output files are flushed to disk before the job completes. |
 
 ## FAQs
 

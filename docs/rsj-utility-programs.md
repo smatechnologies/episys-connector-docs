@@ -389,7 +389,7 @@ or
 
 ## optical_transfer
 
-Takes a list of files to be archived (via a special Symitar repgen) and moves them to archival storage via FTP.
+Takes a list of files to be archived (via a special Symitar repgen) and moves them to archival storage via FTP. If a transfer fails, the utility automatically retries using passive FTP mode.
 
 **Usage:** `/ops/bin/optical_transfer SYM# sequence_number ftp_username ftp_password ftp_hostname[:port] ftp_directory_to_place_files [ftp_extension_to_append]`
 
@@ -400,6 +400,59 @@ Takes a list of files to be archived (via a special Symitar repgen) and moves th
 - **ftp_hostname** — The remote FTP machine. Append `:port_number` for non-standard ports (FTP servers typically use port 21).
 - **ftp_directory** — Where to place the files on the remote machine (relative to the FTP server's default path).
 - **ftp_extension_to_append** — Optional extension to append to all transferred files.
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+| -10 | Wrong number of arguments |
+| -81 | Illegal SYM syntax for argument 1 |
+| -82 | Unknown SYM specified |
+| -83 | FTP file list does not exist |
+| -84 | Cannot open FTP file list |
+| -85 | Cannot find or read a report file to transfer |
+| -86 | Cannot transfer a file |
+| -87 | No files found to transfer |
+| 8 | Transfer output file was not created — FTP may have failed; verify parameters manually |
+| 9 | Transfer output file is too small — FTP may have failed; verify parameters manually |
+| 10 | Transfer output contains error keywords — FTP may have failed; passive mode retry was attempted |
+
+## optical_transfer_sftp
+
+Takes a list of files to be archived (via a special Symitar repgen) and moves them to archival storage via SFTP. Added in version 18.00.0000. Uses the same argument structure as `optical_transfer` but communicates over SFTP instead of FTP. Unlike `optical_transfer`, this utility does not perform a passive mode fallback on failure.
+
+:::note
+
+SMA Technologies recommends using `SMASFTPClient` instead of this utility for new SFTP transfer configurations. `SMASFTPClient` is not affected by Symitar's OS upgrade process, which can remove third-party modules from the system.
+
+:::
+
+**Usage:** `/ops/bin/optical_transfer_sftp SYM# sequence_number sftp_username sftp_password sftp_hostname[:port] sftp_directory_to_place_files [sftp_extension_to_append]`
+
+- **SYM#** — The SYM number (for example, SYM000, SYM100, or SYM999).
+- **sequence_number** — The name of the report file containing the list of report sequence numbers to transfer.
+- **sftp_username** — The remote SFTP username.
+- **sftp_password** — The remote SFTP password.
+- **sftp_hostname** — The remote SFTP machine. Append `:port_number` for non-standard ports.
+- **sftp_directory** — The destination directory on the remote machine.
+- **sftp_extension_to_append** — Optional extension to append to all transferred files.
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+| -10 | Wrong number of arguments |
+| -81 | Illegal SYM syntax for argument 1 |
+| -82 | Unknown SYM specified |
+| -83 | SFTP file list does not exist |
+| -84 | Cannot open SFTP file list |
+| -85 | Cannot find or read a report file to transfer |
+| -86 | Cannot transfer a file |
+| -87 | No files found to transfer |
+| 8 | Transfer output file was not created — SFTP may have failed; verify parameters manually |
+| 9 | Transfer output file is too small — SFTP may have failed; verify parameters manually |
 
 ## print_batch
 
