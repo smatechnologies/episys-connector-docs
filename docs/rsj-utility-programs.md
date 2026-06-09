@@ -218,6 +218,36 @@ If users are running Episys jobs interactively, running this command can lock up
 | ------- | ----------- |
 | 0 | Successful completion |
 
+## ForceLogOffSSO
+
+Automatically logs off any users connected to a specific SYM through an SSO (Single Sign-On) session. Unlike `ForceLogOff`, this utility targets only SSO sessions — identified by `SSO=` in the process table — and leaves non-SSO interactive sessions running. Added in version 21.00.0010.
+
+**Usage:** `/ops/bin/ForceLogOffSSO SYM#[s]`
+
+- **SYM#** — The three-digit SYM number (for example, `000`). You can specify multiple SYM numbers separated by spaces.
+
+:::tip Example
+
+```
+/ops/bin/ForceLogOffSSO 000
+```
+
+:::
+
+:::warning
+
+If users are running Episys jobs interactively through SSO sessions, running this command terminates those sessions immediately. Verify that no interactive jobs are running before using this utility.
+
+:::
+
+A log entry recording the number of users forced off is written to `./log/SCRIPTLOG.MMDDYY`.
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+
 ## install_dates
 
 Installs all necessary files in all SYMs for proper RSJ configuration. Also adds `SMA_DATES.JOB` after all `%PROGRAM CLOSEDAY` and `%JOBFILE CLOSEDAY` occurrences in all job files in the `/SYM/SYMnnn/BATCH` directories.
@@ -394,6 +424,43 @@ Displays all jobs running in batch queues and any interactive RSJ jobs. Similar 
 
 **Usage:** `/ops/bin/qb_sma`
 
+## RUN_BATCHHOSTCONTROL_JOB
+
+Runs a Symitar batch job by reading the `%PROGRAM` directive from a batch file, then running that program directly with the remaining batch file content as its input. Unlike RSJ, this utility does not perform error checking, lock file management, or batch output archiving. Use this utility for batch host control operations that require root access.
+
+:::note
+
+This utility must run as the root user for backup jobs. Concurrent execution is not managed — handle any concurrency requirements through OpCon scheduling.
+
+:::
+
+**Usage:** `/ops/bin/RUN_BATCHHOSTCONTROL_JOB /SYM/SYMnnn/BATCH/batch_file`
+
+- **batch_file** — Fully qualified path to a Symitar batch job file. The path must include `/SYM/SYMnnn/` so the utility can determine which SYM to run in.
+
+:::tip Example
+
+```
+/ops/bin/RUN_BATCHHOSTCONTROL_JOB /SYM/SYM000/BATCH/DISKBACKUP.JOB
+```
+
+:::
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+| 1 | Environment setup error |
+| 10 | No batch file specified on the command line |
+| 15 | Batch file does not exist |
+| 20 | Cannot open batch file |
+| 25 | Cannot open temporary input file |
+| 30 | Batch file does not contain a `%PROGRAM` directive |
+| 35 | Program specified by `%PROGRAM` does not exist in `/SYM/SYMPR/` |
+| 40 | `/SYM/SYMnnn` path not found in batch file name |
+| 45 | Cannot change directory to the SYM directory |
+
 ## restore_backup_reports
 
 Restores a file created by `backup_reports` and places the files in `/SYM/SYM###/opcon_reports`. Specify the file name without the full path — the program prepends the correct path automatically. You are responsible for removing any unneeded or unwanted files after restoration.
@@ -435,6 +502,8 @@ This script takes three arguments:
 | 3 | No status specified |
 | 4 | Invalid service name specified |
 | 5 | Invalid status specified |
+| 6 | Service has status other than On Host or Off Host |
+| 7 | Status change was not successful after retry |
 
 ## sma_copyjob
 
@@ -486,17 +555,6 @@ Displays spaces and non-printable characters in Symitar control files, making it
 | ------- | ----------- |
 | -1 | Error (command line incorrectly formatted, or unable to read/write the specified file) |
 | 0 | Successful completion |
-
-## sma_hostinfo
-
-Generates all information needed to license the RSJ program. Run as root in a telnet session, then send the output file to SMA Technologies.
-
-To run the `sma_hostinfo` program, complete the following steps:
-
-1. From the `#` symbol in Episys, issue the following commands:
-   - `cd /ops/bin`
-   - `/ops/bin/sma_hostinfo`
-2. Send the file `/ops/bin/sma_info` to [license@smatechnologies.com](mailto:license@smatechnologies.com).
 
 ## translate2commas
 

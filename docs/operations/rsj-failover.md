@@ -13,7 +13,7 @@ tags:
 
 The Symitar FAILOVER system allows you to swap a primary and secondary machine when the primary becomes unavailable. RSJ and OpCon are not required to use the FAILOVER system, but when it is configured, specific steps must be followed to ensure RSJ continues to run correctly after a failover event.
 
-- Use this guidance when your site has implemented the Symitar FAILOVER system and needs to ensure RSJ licenses and OpCon schedules are correctly managed during a failover.
+- Use this guidance when your site has implemented the Symitar FAILOVER system and needs to ensure RSJ and OpCon schedules are correctly managed during a failover.
 - Review the FAILOVER configuration requirements before enabling automated FAILOVERD, as SMA Technologies recommends manual failover execution to avoid undetected switchovers in OpCon.
 
 ## FAILOVER configuration requirements
@@ -25,10 +25,6 @@ RSJ and OpCon do not require either the FAILOVER macro or the FAILOVERD daemon t
 Failure to fully configure the FAILOVER systems causes RSJ not to run.
 
 :::
-
-## RSJ license requirements
-
-Both the primary and secondary systems must have all RSJ licenses in a single file on both systems. Failure to ensure that both the primary and secondary servers have their licenses on both systems causes RSJ not to run after the FAILOVER macro runs.
 
 ## OpCon schedule management
 
@@ -53,9 +49,6 @@ SMA Technologies recommends that FAILOVERD not be configured to run automaticall
 
 ## Administration
 
-**Maintaining RSJ licenses during failover:**
-Both the primary and secondary Episys servers must have current RSJ licenses installed. Verify that licenses are synchronized on both servers before enabling FAILOVER. If a license is present on only one server, RSJ stops running after a failover event.
-
 **Managing OpCon machine records after failover:**
 After a failover event, the secondary server takes on the role of the primary. Update the OpCon UNIX machine record to point to the new active server's hostname or IP address. Without this update, OpCon continues to submit jobs to the previous primary server address. Reverse this update when the original primary is restored.
 
@@ -63,9 +56,6 @@ After a failover event, the secondary server takes on the role of the primary. U
 When the original primary server is restored, run the FAILOVER macro in reverse to swap back. Before doing so, repeat the OpCon schedule hold steps to prevent jobs from running on the wrong machine during the swap. Update the OpCon machine record again after the swap completes.
 
 ## Security considerations
-
-**License files must be present on both servers.**
-RSJ validates its license on startup. If the license file is missing from the active server after a failover, RSJ exits without running any jobs.
 
 **Credentials and encrypted files are not replicated automatically.**
 If you use `ExecuteAsRoot`, the `rootInfo` file in `/ops/bin/` contains encrypted root credentials. Verify that this file is present and current on both the primary and secondary servers.

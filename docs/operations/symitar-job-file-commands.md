@@ -198,7 +198,7 @@ If the job requires `EDITFILE.DATA` but `EDITFILE.DATA` already exists, RSJ wait
 :::tip Example
 
 ```
-; MINUTES_TO_WAIT_FOR_EDIT_FILE     5
+;MINUTES_TO_WAIT_FOR_EDITFILE 5
 ```
 
 :::
@@ -409,17 +409,19 @@ Adjust `MAX_EXCEPTIONS` per job or job type based on your credit union's normal 
 
 The following messages are enabled by default:
 
-- `This batch stream is now terminated`
+- `This batch job stream is now terminated`
 - `Inconsistent answers to batch questions`
 - `Entire Batch Job File Terminated!`
 - `CURRENT BATCH JOB TERMINATED`
 - `REMAINDER OF BATCH JOB FILE TERMINATED`
 - `System Is Not Available`
 - `Error 13: Permission denied`
-- `System logon problem`
+- `System logon problem:`
 - `Unspecified error result code of`
 - `DISKBACKUP FAILED`
+- `No space left on device`
 - `Terminated remainder of batch job`
+- `Failed -  On Host failed`
 
 ```
 ;FATAL_MESSAGE "message string"
