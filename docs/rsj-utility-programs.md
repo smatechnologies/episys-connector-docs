@@ -218,6 +218,36 @@ If users are running Episys jobs interactively, running this command can lock up
 | ------- | ----------- |
 | 0 | Successful completion |
 
+## ForceLogOffSSO
+
+Automatically logs off any users connected to a specific SYM through an SSO (Single Sign-On) session. Unlike `ForceLogOff`, this utility targets only SSO sessions — identified by `SSO=` in the process table — and leaves non-SSO interactive sessions running. Added in version 21.00.0010.
+
+**Usage:** `/ops/bin/ForceLogOffSSO SYM#`
+
+- **SYM#** — The three-digit SYM number (for example, `000`).
+
+:::tip Example
+
+```
+/ops/bin/ForceLogOffSSO 000
+```
+
+:::
+
+:::warning
+
+If users are running Episys jobs interactively through SSO sessions, running this command terminates those sessions immediately. Verify that no interactive jobs are running before using this utility.
+
+:::
+
+A log entry recording the number of users forced off is written to `./log/SCRIPTLOG.MMDDYY`.
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+
 ## install_dates
 
 Installs all necessary files in all SYMs for proper RSJ configuration. Also adds `SMA_DATES.JOB` after all `%PROGRAM CLOSEDAY` and `%JOBFILE CLOSEDAY` occurrences in all job files in the `/SYM/SYMnnn/BATCH` directories.
@@ -359,7 +389,7 @@ or
 
 ## optical_transfer
 
-Takes a list of files to be archived (via a special Symitar repgen) and moves them to archival storage via FTP.
+Takes a list of files to be archived (via a special Symitar repgen) and moves them to archival storage via FTP. If a transfer fails, the utility automatically retries using passive FTP mode.
 
 **Usage:** `/ops/bin/optical_transfer SYM# sequence_number ftp_username ftp_password ftp_hostname[:port] ftp_directory_to_place_files [ftp_extension_to_append]`
 
@@ -370,6 +400,59 @@ Takes a list of files to be archived (via a special Symitar repgen) and moves th
 - **ftp_hostname** — The remote FTP machine. Append `:port_number` for non-standard ports (FTP servers typically use port 21).
 - **ftp_directory** — Where to place the files on the remote machine (relative to the FTP server's default path).
 - **ftp_extension_to_append** — Optional extension to append to all transferred files.
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+| -10 | Wrong number of arguments |
+| -81 | Illegal SYM syntax for argument 1 |
+| -82 | Unknown SYM specified |
+| -83 | FTP file list does not exist |
+| -84 | Cannot open FTP file list |
+| -85 | Cannot find or read a report file to transfer |
+| -86 | Cannot transfer a file |
+| -87 | No files found to transfer |
+| 8 | Transfer output file was not created — FTP may have failed; verify parameters manually |
+| 9 | Transfer output file is too small — FTP may have failed; verify parameters manually |
+| 10 | Transfer output contains error keywords — FTP may have failed; verify parameters manually |
+
+## optical_transfer_sftp
+
+Takes a list of files to be archived (via a special Symitar repgen) and moves them to archival storage via SFTP. Added in version 18.00.0000. Uses the same argument structure as `optical_transfer` but communicates over SFTP instead of FTP. Unlike `optical_transfer`, this utility does not perform a passive mode fallback on failure.
+
+:::note
+
+SMA Technologies recommends using `SMASFTPClient` instead of this utility for new SFTP transfer configurations. `SMASFTPClient` is not affected by Symitar's OS upgrade process, which can remove third-party modules from the system.
+
+:::
+
+**Usage:** `/ops/bin/optical_transfer_sftp SYM# sequence_number sftp_username sftp_password sftp_hostname[:port] sftp_directory_to_place_files [sftp_extension_to_append]`
+
+- **SYM#** — The SYM number (for example, SYM000, SYM100, or SYM999).
+- **sequence_number** — The name of the report file containing the list of report sequence numbers to transfer.
+- **sftp_username** — The remote SFTP username.
+- **sftp_password** — The remote SFTP password.
+- **sftp_hostname** — The remote SFTP machine. Append `:port_number` for non-standard ports.
+- **sftp_directory** — The destination directory on the remote machine.
+- **sftp_extension_to_append** — Optional extension to append to all transferred files.
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+| -10 | Wrong number of arguments |
+| -81 | Illegal SYM syntax for argument 1 |
+| -82 | Unknown SYM specified |
+| -83 | SFTP file list does not exist |
+| -84 | Cannot open SFTP file list |
+| -85 | Cannot find or read a report file to transfer |
+| -86 | Cannot transfer a file |
+| -87 | No files found to transfer |
+| 8 | Transfer output file was not created — SFTP may have failed; verify parameters manually |
+| 9 | Transfer output file is too small — SFTP may have failed; verify parameters manually |
 
 ## print_batch
 
@@ -393,6 +476,43 @@ Prints the batch output report from the most recent OpCon run of a Symitar batch
 Displays all jobs running in batch queues and any interactive RSJ jobs. Similar to the Symitar command `qb`.
 
 **Usage:** `/ops/bin/qb_sma`
+
+## RUN_BATCHHOSTCONTROL_JOB
+
+Runs a Symitar batch job by reading the `%PROGRAM` directive from a batch file, then running that program directly with the remaining batch file content as its input. Unlike RSJ, this utility does not perform error checking, lock file management, or batch output archiving. Use this utility for batch host control operations that require root access.
+
+:::note
+
+This utility must run as the root user for backup jobs. Concurrent execution is not managed — handle any concurrency requirements through OpCon scheduling.
+
+:::
+
+**Usage:** `/ops/bin/RUN_BATCHHOSTCONTROL_JOB /SYM/SYMnnn/BATCH/batch_file`
+
+- **batch_file** — Fully qualified path to a Symitar batch job file. The path must include `/SYM/SYMnnn/` so the utility can determine which SYM to run in.
+
+:::tip Example
+
+```
+/ops/bin/RUN_BATCHHOSTCONTROL_JOB /SYM/SYM000/BATCH/DISKBACKUP.JOB
+```
+
+:::
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| 0 | Successful completion |
+| 1 | Environment setup error |
+| 10 | No batch file specified on the command line |
+| 15 | Batch file does not exist |
+| 20 | Cannot open batch file |
+| 25 | Cannot open temporary input file |
+| 30 | Batch file does not contain a `%PROGRAM` directive |
+| 35 | Program specified by `%PROGRAM` does not exist in `/SYM/SYMPR/` |
+| 40 | `/SYM/SYMnnn` path not found in batch file name |
+| 45 | Cannot change directory to the SYM directory |
 
 ## restore_backup_reports
 
@@ -435,6 +555,8 @@ This script takes three arguments:
 | 3 | No status specified |
 | 4 | Invalid service name specified |
 | 5 | Invalid status specified |
+| 6 | Service has status other than On Host or Off Host |
+| 7 | Status change was not successful after retry |
 
 ## sma_copyjob
 
@@ -487,17 +609,6 @@ Displays spaces and non-printable characters in Symitar control files, making it
 | -1 | Error (command line incorrectly formatted, or unable to read/write the specified file) |
 | 0 | Successful completion |
 
-## sma_hostinfo
-
-Generates all information needed to license the RSJ program. Run as root in a telnet session, then send the output file to SMA Technologies.
-
-To run the `sma_hostinfo` program, complete the following steps:
-
-1. From the `#` symbol in Episys, issue the following commands:
-   - `cd /ops/bin`
-   - `/ops/bin/sma_hostinfo`
-2. Send the file `/ops/bin/sma_info` to [license@smatechnologies.com](mailto:license@smatechnologies.com).
-
 ## translate2commas
 
 A wrapper around `update_scf` that translates the `^` character to a comma. Use this when a property that originally contained commas needs to be used with events — the commas were replaced by `^` symbols to avoid delimiter conflicts in SAM events.
@@ -546,6 +657,8 @@ By default, `update_scf` modifies all prompts with the exact prompt text. To mod
 | 0 | Successful completion |
 
 ## Legacy utilities
+
+The following utilities were superseded by `LookForReport` in version 14.00.0000 (2013). They are retained in the distribution for backward compatibility. For new jobs, use `LookForReportInRSJ` or `LookForReport` instead.
 
 ### LookForBatchOutputSequence
 
