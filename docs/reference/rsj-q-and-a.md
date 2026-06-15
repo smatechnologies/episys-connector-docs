@@ -13,8 +13,6 @@ tags:
 
 This page answers the most common questions about RSJ configuration, error handling, and troubleshooting. Use this as a first reference when investigating unexpected job behavior or configuring RSJ for the first time.
 
----
-
 ### Can you automate the handling of ACH files?
 
 It depends. The USB security device required to access FedLine Advantage cannot be left plugged into a computer, so that step always has a manual component. Once ACH files have been downloaded to the machine, SMA Technologies' file watcher services can detect them and process them automatically. If a third-party processor is being used, SMA Technologies can automate the process. If the credit union has access to Fedline Command, the process can be automated.
