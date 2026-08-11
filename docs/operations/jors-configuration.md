@@ -31,15 +31,3 @@ RECONFIGURE
 
 The maximum value for this configuration parameter is `2147483647`.
 
-## Workaround for older OpCon versions
-
-Versions of OpCon before 4.0 contain a bug that prevents users from viewing all job output from Symitar jobs. Most jobs display without issue, but jobs with very large output files (such as GOODNIGHT) may exceed the maximum viewable limit. To work around this issue, create a shell script:
-
-```bash
-cat "/ops/bin/RSJ 0 GOODNIGHT|tee /tmp/GOODNIGHT.OUT" >/tmp/GOODNIGHT.KSH
-chmod ugo+x /tmp/GOODNIGHT.KSH
-```
-
-In the start image line in OpCon, use: `/bin/ksh /tmp/GOODNIGHT.KSH`
-
-When the job runs, the output is copied to `/tmp/GOODNIGHT.OUT` and `STDOUT`. Use a text editor such as `vi` to view the output.

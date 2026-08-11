@@ -62,10 +62,10 @@ Documentation for learning VI:
 
 VI editor for Windows that can be installed:
 
-[http://www.vim.org](http://www.vim.org)
+[https://www.vim.org](https://www.vim.org)
 
 ### UNIX shell programming
 
 Introduction for creating simple Bourne shell (`sh`) or Korn shell (`ksh`) scripts:
 
-[http://steve-parker.org/sh/sh.shtml](http://steve-parker.org/sh/sh.shtml)
+[https://steve-parker.org/sh/sh.shtml](https://steve-parker.org/sh/sh.shtml)

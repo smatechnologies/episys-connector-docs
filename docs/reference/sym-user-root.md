@@ -149,6 +149,28 @@ To add the required environment variable, complete the following steps:
 3. Edit `/ops/bin/rootInfo` and set `pathToEnvironment` to `/SYM/OP/bin/LOGON`.
 4. Change directories to `/ops/bin` and run `EncryptRootInfo`.
 
+## Diagnosing ExecuteAsRoot failures
+
+If a job using `;ExecuteAsRoot` fails and the cause is not apparent from the batch output, use `ExecuteAsRootDebug` to capture the intermediate expect script for review. Added in version 16.00.0400.
+
+`ExecuteAsRootDebug` is functionally identical to `ExecuteAsRoot` with one difference: it does not delete the intermediate expect script file at `/tmp/SMA/` after the job runs. This allows you to inspect the script and verify that the root password, prompt character, `su` path, and `BATCHHOSTCONTROL` invocation were assembled correctly.
+
+:::warning
+
+The expect script file retained by `ExecuteAsRootDebug` contains the root password in plaintext. Delete the file manually from `/tmp/SMA/` immediately after reviewing it.
+
+:::
+
+To use `ExecuteAsRootDebug`, complete the following steps:
+
+1. Copy `ExecuteAsRootDebug` to `/SYM/SYMnnn/BATCH/` and name it `ExecuteAsRoot` — replacing the existing binary for the diagnostic run.
+2. Run the failing job normally through OpCon.
+3. After the job completes, locate the retained script file in `/tmp/SMA/` and review it.
+4. Delete the script file from `/tmp/SMA/`.
+5. Restore the original `ExecuteAsRoot` binary.
+
+The job runs as normal and the expect script is available for review in `/tmp/SMA/` until you delete it.
+
 ## Limitations
 
 - The `;SCRIPT` directive does not run `ExecuteAsRoot`. This prevents malicious use.

@@ -38,6 +38,7 @@ module.exports = {
         'reference/rsj-q-and-a',
         'reference/rsj-known-differences',
         'reference/known-symitar-issues',
+        'reference/environment-variables',
         'reference/unix-commands',
         'reference/commonly-used-terms',
         'reference/sym-user-root',

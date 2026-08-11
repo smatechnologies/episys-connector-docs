@@ -54,12 +54,12 @@ This file is read and run for **all** job files. Make sure that reasonable value
 
 ## CREATE_OPCON_REPORTS_LINKS
 
-`CREATE_OPCON_REPORTS_LINKS` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `true`.
+`CREATE_OPCON_REPORTS_LINKS` can be set in the `SMA_DEFAULTS` file or in any batch file. The default value is `false` as of version 20.00.0020. In earlier versions the default was `true`.
 
 :::tip Example
 
 ```
-;CREATE_OPCON_REPORT_LINKS true | false
+;CREATE_OPCON_REPORTS_LINKS true | false
 ```
 
 :::
@@ -198,7 +198,7 @@ If the job requires `EDITFILE.DATA` but `EDITFILE.DATA` already exists, RSJ wait
 :::tip Example
 
 ```
-; MINUTES_TO_WAIT_FOR_EDIT_FILE     5
+;MINUTES_TO_WAIT_FOR_EDITFILE 5
 ```
 
 :::
@@ -362,6 +362,8 @@ The quotes around the report name are mandatory. This directive is turned off by
 
 ## Best practices for error checking
 
+The following guidelines help you configure RSJ error handling reliably across different job types and credit union environments.
+
 ### Understanding error codes and exceptions
 
 - **Error codes** are return codes from Symitar programs. Each credit union determines which error code returns are acceptable for their environment.
@@ -407,17 +409,19 @@ Adjust `MAX_EXCEPTIONS` per job or job type based on your credit union's normal 
 
 The following messages are enabled by default:
 
-- `This batch stream is now terminated`
+- `This batch job stream is now terminated`
 - `Inconsistent answers to batch questions`
 - `Entire Batch Job File Terminated!`
 - `CURRENT BATCH JOB TERMINATED`
 - `REMAINDER OF BATCH JOB FILE TERMINATED`
 - `System Is Not Available`
 - `Error 13: Permission denied`
-- `System logon problem`
+- `System logon problem:`
 - `Unspecified error result code of`
 - `DISKBACKUP FAILED`
+- `No space left on device`
 - `Terminated remainder of batch job`
+- `Failed -  On Host failed`
 
 ```
 ;FATAL_MESSAGE "message string"

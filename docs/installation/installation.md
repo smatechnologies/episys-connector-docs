@@ -105,10 +105,27 @@ This file must be updated immediately after any date change or use of the `insta
 
 :::
 
+## Security considerations
+
+**Installation requires root.**
+The installation procedure requires root access on the Episys server to create `/ops/bin/` and extract the RSJ binaries. The root password must be available before beginning installation.
+
+**RSJ runs as the SYM user.**
+After installation, RSJ jobs run under the SYM user account (for example, `SYM000`), not as root. This limits the file system access of RSJ jobs to the directories that the SYM user can reach.
+
+**Root elevation for specific jobs.**
+If any Symitar batch jobs require root permissions, use the `ExecuteAsRoot` feature. This requires running `EncryptRootInfo` to store encrypted root credentials in the `rootInfo` file in `/ops/bin/`. The credentials are stored using Blowfish encryption. Do not store the root password in plain text anywhere in the job file or the `SMA_DEFAULTS` file.
+
+**RSJ requires the UNIX agent.**
+RSJ checks for the `SMA_CONFIG_FILE` environment variable on startup and exits if it is not set. This prevents RSJ from being run outside of the OpCon UNIX agent, which provides job tracking and access control.
+
+**File permissions on /ops/bin/.**
+After installation, verify that the RSJ binaries in `/ops/bin/` have correct ownership and permissions. The binaries must be readable and executable by the SYM user.
+
 ## FAQs
 
 **Do I need to stop OpCon before upgrading RSJ?**
-It is recommended to place all Symitar machine schedules on hold in OpCon before performing an upgrade to prevent jobs from starting during the upgrade process.
+Place all Symitar machine schedules on hold in OpCon before performing an upgrade to prevent jobs from starting during the upgrade process.
 
 **What happens if SMA_DATES.JOB is not run after installation?**
 RSJ will use incorrect processing dates when interpreting date-based directives in job files. This can cause jobs to run on the wrong dates or fail to run at all. Always run `SMA_DATES.JOB` immediately after installation and after any Symitar date change.

@@ -20,7 +20,7 @@ The RSJ command line is the start image used in an OpCon job definition to run a
 ## Syntax
 
 ```
-/ops/bin/RSJ [-Eeditfile_name] [-d] [-D] SYM# JobName [restart_point]
+/ops/bin/RSJ [-Eeditfile_name] [-d] [-D] [-b] SYM# JobName [restart_point]
 ```
 
 ## RSJ command line parameters
@@ -30,6 +30,7 @@ The RSJ command line is the start image used in an OpCon job definition to run a
 | `-Eeditfile_name` | Optional. Specifies the path and name of the file to move into `/SYM/SYMnnn/EDITFILE.DATA`. There is no space between `-E` and the `editfile_name`. If an edit file is specified, RSJ runs the job in single-thread mode. See [Single thread versus multi-thread](#single-thread-versus-multi-thread). |
 | `-D` | Optional. Causes RSJ to delete the contents of `/SYM/SYMnnn/opcon_reports/job_name_to_run` before running the job. If `-D` is not present, the directory is not deleted before the job runs. |
 | `-d` | Optional. Causes RSJ to delete the edit file specified by `-Eeditfile_name` upon successful job completion. If `-d` is not present, the edit file is not deleted. |
+| `-b` | Optional. Suppresses the creation of the Symitar batch output copy in `opcon_reports`. Use this flag when batch output storage is not required and you want to reduce disk usage. When `-b` is set, the job output is not retrievable through JORS after the job completes. |
 | `SYM#` | Required. Specifies which SYM to run the job in. The SYM number can be in either of the following formats: `000` or `SYM000`. |
 | `-sSummaryFileConfig` | Optional. Specifies the path to a configuration file that controls the creation of a summary file. Usually, this summary file is only created for jobs with very large batch output files such as GOODNIGHT. See [Summary Files](summary-files). *Note: Until the Enterprise Manager is updated, you must change the OpCon job type to `<None>` to add this parameter.* |
 | `JobName` | Required. Specifies the name of the Symitar batch job to run. |
