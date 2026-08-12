@@ -192,17 +192,25 @@ Finds all possible user prompts in a nested Symitar job. Use this program to fac
 
 ## ForceLogOff
 
-Forcibly terminates all SYMITAR console sessions on a specific SYM, then automatically kills and restarts the FrontController so that stuck consoles are cleared without manual intervention. Timestamped progress is written to stdout and captured by OpCon JORS.
+Logs off all users connected to a specific SYM by restarting that SYM's internal sym level services. This disconnects every user regardless of how they signed in, and leaves no stuck consoles behind.
+
+The utility restarts services in two steps, pausing between them to let the services stop cleanly. This is equivalent to running the symop RESTART option 25 (Restart Internal Sym Level Services). Timestamped progress is written to standard output, which OpCon captures in the job's output.
 
 **Usage:** `/ops/bin/ForceLogOff SYM#`
 
-- **SYM#** — The three-digit SYM number (for example, 000).
+- **SYM#** — The SYM number (for example, 0, 000, or SYM000).
 
 :::tip Example
 
 ```
 /ops/bin/ForceLogOff 000
 ```
+
+:::
+
+:::info
+
+This utility must run as root because it calls the Symitar `UP.SYMSERVERS` core macro.
 
 :::
 
@@ -220,11 +228,13 @@ If users are running Episys jobs interactively, running this command can lock up
 
 ## ForceLogOffSSO
 
-Automatically logs off any users connected to a specific SYM through an SSO (Single Sign-On) session. Unlike `ForceLogOff`, this utility targets only SSO sessions — identified by `SSO=` in the process table — and leaves non-SSO interactive sessions running. Added in version 21.00.0010.
+Logs off all users connected to a specific SYM, including those who signed in through SSO (Single Sign-On).
+
+`ForceLogOffSSO` is a symbolic link to [ForceLogOff](#forcelogoff). Both names run the same utility and behave identically. Because restarting the SYM's internal sym level services disconnects every user regardless of sign-in method, a separate SSO-specific utility is no longer needed. The link is retained so that existing OpCon jobs referencing `ForceLogOffSSO` continue to work.
 
 **Usage:** `/ops/bin/ForceLogOffSSO SYM#`
 
-- **SYM#** — The three-digit SYM number (for example, `000`).
+- **SYM#** — The SYM number (for example, 0, 000, or SYM000).
 
 :::tip Example
 
@@ -234,13 +244,17 @@ Automatically logs off any users connected to a specific SYM through an SSO (Sin
 
 :::
 
-:::warning
+:::info
 
-If users are running Episys jobs interactively through SSO sessions, running this command terminates those sessions immediately. Verify that no interactive jobs are running before using this utility.
+This utility must run as root because it calls the Symitar `UP.SYMSERVERS` core macro.
 
 :::
 
-A log entry recording the number of users forced off is written to `./log/SCRIPTLOG.MMDDYY`.
+:::warning
+
+If users are running Episys jobs interactively, running this command can lock up the database and require a SYM reload. See [Canceling an RSJ job](operations/canceling-rsj-job.md) for more information.
+
+:::
 
 ### Return codes and descriptions
 
