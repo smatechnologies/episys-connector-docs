@@ -31,3 +31,30 @@ RECONFIGURE
 
 The maximum value for this configuration parameter is `2147483647`.
 
+## When output is missing rather than truncated
+
+`max text repl size` governs how much output OpCon can store, so raising it resolves output that is
+cut short. It does not help when there is no output at all.
+
+If JORS shows nothing for a job, check whether the job was started with the `-b` flag. That flag
+suppresses the batch output upload, so the output is not retrievable through JORS after the job
+completes. See [Command line](./command-line.md) for the full option list.
+
+## FAQs
+
+**Job output is truncated in OpCon. What do I change?**
+Increase `max text repl size` on the OpCon database, as shown above. The default of 65,536 characters
+is too small for large jobs such as GOODNIGHT.
+
+**JORS shows no output at all for a job. Is this the same setting?**
+No. Check for the `-b` flag on the RSJ command line first — it suppresses the output upload
+entirely.
+
+**What is the largest value I can set?**
+`2147483647`.
+
+## Related topics
+
+- [Command line](./command-line.md)
+- [RSJ reports](../rsj-reports.md)
+

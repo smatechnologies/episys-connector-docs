@@ -18,13 +18,46 @@ RSJ includes a set of utility programs installed in `/ops/bin/` that support com
 - Use `backup_and_prune` nightly to archive and clean the `opcon_reports` directory.
 - Use `update_scf` to set prompt responses in Symitar job files before running them through RSJ.
 
+:::caution Passwords passed on the command line
+
+Six of these utilities take a password or token as a positional argument: `LookForReportInRSJ`,
+`LookForReport`, `ExtractDayDataForToken`, `ExtractMonthDataForToken`, `optical_transfer` and
+`optical_transfer_sftp`. On AIX the full command line of a running process is visible to any user who
+runs `ps -ef`, so the value is exposed for the lifetime of the utility. The same values are stored in
+the OpCon job definitions that call them.
+
+Use a dedicated OpCon account with only the permissions the event needs — for the token-setting
+utilities that is **Maintain Tokens** — and restrict who can view the job definitions that carry
+these arguments.
+
+:::
+
 ## ach_processed
 
-Validates that a given ACH file has not been processed before. Stores its database of previously processed ACH files at `/SYM/SYMnnn/BATCH/ach_processed`. Returns 0 on successful completion (the file has not been processed before).
+Validates that a given ACH file has not been processed before. Stores its database of previously processed ACH files at `/SYM/SYMnnn/BATCH/ach_processed`.
 
 **Usage:** `/ops/bin/ach_processed SYM# ACH_FILE`
 
 - **SYM#** — The SYM number (for example, SYM000, SYM100, or SYM999).
+- **ACH_FILE** — An explicit path, or the program checks `/SYM/SYMnnn/LETTERSPECS` then `/SYM/SYMnnn/`.
+
+### Return codes and descriptions
+
+The code to test for is **22**: the file has been processed before. Return code 0 means the file is new.
+
+| Returns | Description |
+| ------- | ----------- |
+| -111 | Cannot find the `sync` command |
+| 0 | Successful completion — this ACH file has not been processed before |
+| 2 | ACH file was not found |
+| 5 | Unable to open the ACH file (check permissions) |
+| 6 | ACH file has a format error (contact SMA Technologies) |
+| 11 | Arguments to program are bad (refer to Usage above) |
+| 15 | Bad SYM format — pass in `nnn` or `SYMnnn` |
+| 16 | SYM directory does not exist |
+| 20 | Unable to determine the ACH file format (contact SMA Technologies) |
+| 21 | Cannot open the processed-file database |
+| 22 | This ACH file has been processed before |
 
 ## backup_and_prune
 
@@ -32,12 +65,20 @@ Tars and compresses the `/SYM/SYMnnn/opcon_reports` directory, stores the result
 
 SMA Technologies highly recommends that all credit unions run this program nightly.
 
-**Usage:** `/ops/bin/backup_and_prune SYM#s 7 30`
+**Usage:** `/ops/bin/backup_and_prune SYM# days_to_keep_reports days_to_keep_backup`
 
 - **SYM#** — The SYM number in the form SYM000.
-- **days_to_keep_reports** — Number of days to keep files in the report directory.
-- **days_to_keep_backup** — Number of days to keep backup files.
-- **Returns** — 0 on successful completion.
+- **days_to_keep_reports** — Number of days to keep files in the report directory (for example, 7).
+- **days_to_keep_backup** — Number of days to keep backup files (for example, 30).
+
+### Return codes and descriptions
+
+| Returns | Description |
+| ------- | ----------- |
+| -83 | The `opcon_reports` directory does not exist |
+| -82 | The SYM directory does not exist |
+| -81 | Illegal SYM number |
+| 0 | Successful completion |
 
 ## backup_reports
 
@@ -64,7 +105,6 @@ Tars and compresses the `/SYM/SYMnnn/opcon_reports` directory and stores the res
 | 17 | Cannot find opcon_reports directory |
 | 18 | Backup file already exists — will not overwrite |
 | 19 | Cannot build tar file |
-| 20 | Cannot remove old files in opcon_reports |
 
 ## change_perms
 
@@ -87,6 +127,7 @@ Changes the owner, group, and permissions on a file. Typically used after a file
 | -18 | Unable to change group of file |
 | -19 | Unable to change permissions of file |
 | -20 | File does not exist |
+| -111 | Cannot find the `sync` command |
 
 ## compare_fed_totals
 
@@ -112,7 +153,7 @@ If the format of the report changed from what SMA Technologies was expecting, th
 | ------- | ----------- |
 | 0 | Compare was good |
 | 1 | Compare was bad |
-| 2 | Fed file was found |
+| 2 | Fed file was not found |
 | 3 | Batch output file was not found |
 | 5 | Unable to open fed file (check permissions) |
 | 6 | Fed file has a format error (contact SMA Technologies) |
@@ -122,6 +163,9 @@ If the format of the report changed from what SMA Technologies was expecting, th
 | 11 | Arguments to program are bad (refer to Usage above) |
 | 15 | Bad SYM format — pass in `nnn` or `SYMnnn` |
 | 16 | SYM directory does not exist |
+| 20 | Unable to determine the Fed file format (contact SMA Technologies) |
+| -111 | Cannot find the `sync` command |
+| -133 | Timed out waiting for a file to be flushed to disk |
 
 ## ExtractDayDataForToken
 
@@ -252,14 +296,17 @@ A log entry recording the number of users forced off is written to `./log/SCRIPT
 
 Installs all necessary files in all SYMs for proper RSJ configuration. Also adds `SMA_DATES.JOB` after all `%PROGRAM CLOSEDAY` and `%JOBFILE CLOSEDAY` occurrences in all job files in the `/SYM/SYMnnn/BATCH` directories.
 
-**Usage:** `/ops/bin/install_dates`
+**Usage:** `/ops/bin/install_dates SYM#`
+
+- **SYM#** — The SYM number, as either `nnn` or `SYMnnn` (for example, `000` or `SYM000`).
 
 ### Return codes and descriptions
 
 | Returns | Description |
 | ------- | ----------- |
+| -1 | Illegal or missing SYM number, the SYM directory does not exist, or a job file could not be opened |
 | 0 | Successful completion |
-| 10 | Gross error |
+| 17 | Cannot find the RSJ directory |
 
 ## integrate_message
 
@@ -269,13 +316,24 @@ Updates Episys job file prompts with responses from a note file. Primarily used 
 
 - **SOME_BATCH_JOB** — Fully qualified path to an Episys batch job file.
 - **NOTEFILE** — Fully qualified path to the note file containing prompts and updated responses. The note file has the same format as a batch job.
-- **occurrence** — Optional. Specifies which occurrence of the prompt to start substituting at. Default is 1. Only the first prompt in the note file is used as the index guide for the occurrence logic.
+- **occurrence** — Optional. Specifies which occurrence of the prompt to start substituting at. Must be a single digit from 1 to 9. Default is 1. Only the first prompt in the note file is used as the index guide for the occurrence logic.
 
 ### Return codes and descriptions
 
 | Returns | Description |
 | ------- | ----------- |
 | 0 | Successful completion |
+| 7 | Cannot rewrite the batch job file; the original file is unchanged |
+| 8 | Note file does not exist or cannot be read |
+| 9 | Batch job file does not exist or cannot be read |
+| 10 | Wrong number of arguments, or the updated file could not be renamed over the batch job file |
+| 11 | The updated file was empty, so the batch job file was left unchanged |
+| 13 | Batch job file is zero bytes |
+| 14 | Note file is zero bytes |
+| 15 | Occurrence is not a single digit |
+| 16 | Note file path is not fully qualified |
+| 17 | Batch job file path is not fully qualified |
+| 21 | Occurrence is not greater than zero |
 
 ## LookForReportInRSJ
 
@@ -318,17 +376,16 @@ This script takes seven required arguments and one optional argument:
 
 | Returns | Description |
 | ------- | ----------- |
-| 0 | No error |
-| -1 | No SYM number specified |
-| -2 | No report directory specified |
-| -3 | No report name specified |
-| -4 | No property name specified |
-| -5 | No MSGIN path specified |
-| -6 | No OpCon user specified |
-| -7 | No OpCon user password specified |
-| -8 | Invalid MSGIN specified |
+| -88 | Cannot get a directory listing |
+| -85 | Cannot create MSGIN file |
+| -82 | Unknown SYM specified |
+| -81 | Illegal SYM number |
+| -10 | Wrong number of arguments |
 | -9 | Invalid report directory |
-| -10 | Specified report not found |
+| -8 | Invalid MSGIN directory |
+| -1 | Cannot open batch output file |
+| 0 | Success |
+| 10 | Report not found |
 
 ## LookForReport
 
@@ -644,7 +701,7 @@ By default, `update_scf` modifies all prompts with the exact prompt text. To mod
 :::tip Example
 
 ```
-/ops/bin/update_scf -f/SYM/SYM000/BATCH/CC.LATE/FEE "Effective Date:[[11After25thEff]]" "Date:047"
+/ops/bin/update_scf -f/SYM/SYM000/BATCH/CC.LATE.FEE "Effective Date:[[11After25thEff]]" "Date:047"
 ```
 
 :::

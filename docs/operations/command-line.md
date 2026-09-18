@@ -1,6 +1,6 @@
 ---
 title: Command line
-description: "Run RSJ from the command line to execute Symitar batch jobs under OpCon control, with options for single-thread and multi-thread modes."
+description: "Run RSJ from the command line to run Symitar batch jobs under OpCon control, with options for single-thread and multi-thread modes."
 tags:
   - Reference
   - Automation Engineer
@@ -20,7 +20,7 @@ The RSJ command line is the start image used in an OpCon job definition to run a
 ## Syntax
 
 ```
-/ops/bin/RSJ [-Eeditfile_name] [-d] [-D] [-b] SYM# JobName [restart_point]
+/ops/bin/RSJ [-Eeditfile_name] [-d] [-D] [-b] [-sSummaryFileConfig] SYM# JobName [restart_point]
 ```
 
 ## RSJ command line parameters
@@ -32,9 +32,9 @@ The RSJ command line is the start image used in an OpCon job definition to run a
 | `-d` | Optional. Causes RSJ to delete the edit file specified by `-Eeditfile_name` upon successful job completion. If `-d` is not present, the edit file is not deleted. |
 | `-b` | Optional. Suppresses the creation of the Symitar batch output copy in `opcon_reports`. Use this flag when batch output storage is not required and you want to reduce disk usage. When `-b` is set, the job output is not retrievable through JORS after the job completes. |
 | `SYM#` | Required. Specifies which SYM to run the job in. The SYM number can be in either of the following formats: `000` or `SYM000`. |
-| `-sSummaryFileConfig` | Optional. Specifies the path to a configuration file that controls the creation of a summary file. Usually, this summary file is only created for jobs with very large batch output files such as GOODNIGHT. See [Summary Files](summary-files). *Note: Until the Enterprise Manager is updated, you must change the OpCon job type to `<None>` to add this parameter.* |
+| `-sSummaryFileConfig` | Optional. Specifies the path to a configuration file that controls the creation of a summary file. Usually, this summary file is only created for jobs with very large batch output files such as GOODNIGHT. See [Summary files](./summary-files.md). *Note: Until the Enterprise Manager is updated, you must change the OpCon job type to `<None>` to add this parameter.* |
 | `JobName` | Required. Specifies the name of the Symitar batch job to run. |
-| `restart_point` | Optional. Specifies the name of a restart point to look for in a Symitar batch job file. See [RESTART_POINT](symitar-job-file-commands#restart_point). |
+| `restart_point` | Optional. Specifies the name of a restart point to look for in a Symitar batch job file. See [RESTART_POINT](./symitar-job-file-commands.md#restart_point). |
 
 ## Single thread versus multi-thread
 
@@ -75,4 +75,4 @@ In single-thread mode (the default), RSJ allows only one job to run in a SYM at 
 No. RSJ overwrites any file at `EDITFILE.DATA` when it starts. Always use RSJ with the `-E` flag to manage the edit file.
 
 **How do I stop error checking for a job?**
-Set `;ERROR_LEVEL 999` and `;MAX_EXCEPTIONS 2000000000` at the beginning of the job file. See [Symitar job file commands](symitar-job-file-commands) for details.
+Set `;ERROR_LEVEL 999` and `;MAX_EXCEPTIONS 2000000000` at the beginning of the job file. See [Symitar job file commands](./symitar-job-file-commands.md) for details.

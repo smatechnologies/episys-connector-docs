@@ -114,7 +114,7 @@ The `%RUNDATE` option forces or excludes processing on given days.
 
 :::
 
-### %RUNDATE MMDDYYY
+### %RUNDATE MMDDYYYY
 
 Runs this script only on this date.
 

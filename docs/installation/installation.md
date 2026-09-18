@@ -26,7 +26,13 @@ When you configure the UNIX agent to run, you must leave the `path_to_su` value 
 **Place the RSJ tar file on the machine with Episys and a UNIX agent.**
 
 1. Copy the tar file from the OpCon distribution directory, `<media>:\Install\LSAM\RSJ`, to the machine for FTP.
-2. FTP the RSJ tar file (for example, `RSJ_1_30_0012.tar`) to the AIX machine in binary mode.
+2. FTP the RSJ tar file (for example, `rsj_22_00_0100.tar`) to the AIX machine in binary mode. The steps below assume you place it in `/SYM/SYMnnn/LETTERSPECS`, because the `mv` command in each procedure reads it from there. The file name is lower case and the version is underscore-separated; AIX file names are case-sensitive.
+
+   :::note
+
+   [Running RSJ as the SYM user](../reference/sym-user-root.md) gives a shorter route for the same task: transfer the tar file straight to `/ops/bin` and extract it in place, which skips the `mv` step. Either destination works — use the procedure whose later steps match where you put the file.
+
+   :::
 
 ## Installation
 
@@ -45,9 +51,9 @@ To install RSJ for the first time, complete the following steps:
    - `cd /ops`
    - `mkdir bin`
    - `cd bin`
-   - `mv /SYM/SYMnnn/LETTERSPECS/RSJ<version>.tar /ops/bin/RSJ<version>.tar`
+   - `mv /SYM/SYMnnn/LETTERSPECS/rsj_<version>.tar /ops/bin/rsj_<version>.tar`
 4. In `/ops/bin`, untar the file by issuing the following command:
-   `tar -xvf RSJ<version>.tar`
+   `tar -xvf rsj_<version>.tar`
 
 ### Upgrade installation
 
@@ -58,9 +64,9 @@ To upgrade an existing RSJ installation, complete the following steps:
    - `su`
    - Enter the root password.
    - `cd /ops/bin`
-   - `mv /SYM/SYMxxx/LETTERSPECS/RSJ<version>.tar /ops/bin/RSJ<version>.tar`
+   - `mv /SYM/SYMnnn/LETTERSPECS/rsj_<version>.tar /ops/bin/rsj_<version>.tar`
 3. In `/ops/bin`, untar the file by issuing the following command:
-   `tar -xvf RSJ<version>.tar`
+   `tar -xvf rsj_<version>.tar`
 
 ### Set up SMA_DATES.JOB
 
@@ -68,7 +74,7 @@ Each SYM in Episys can be on a different system date. RSJ must know the system d
 
 :::warning
 
-When the `install_dates` program runs, it creates the `sma_dates.job` job file, `sma_dates` letter file, and `sma_dates.rg` for every SYM. The `sma_dates.job` is also inserted below the `closeday` program in every job file that contains the `closeday` program (before doing so, a backup of the job is created with a `_pre.sma` extension). The `sma_dates.job` is also added into all jobs that contain the `closeday` job file.
+When the `install_dates` program runs, it creates the `SMA_DATES.JOB` job file, `SMA_DATES` letter file, and `SMA_DATES.RG` for every SYM. The `SMA_DATES.JOB` is also inserted below the `CLOSEDAY` program in every job file that contains the `CLOSEDAY` program (before doing so, a backup of the job is created with a `_pre.sma` extension). The `SMA_DATES.JOB` is also added into all jobs that contain the `CLOSEDAY` job file.
 
 :::
 
@@ -114,13 +120,15 @@ The installation procedure requires root access on the Episys server to create `
 After installation, RSJ jobs run under the SYM user account (for example, `SYM000`), not as root. This limits the file system access of RSJ jobs to the directories that the SYM user can reach.
 
 **Root elevation for specific jobs.**
-If any Symitar batch jobs require root permissions, use the `ExecuteAsRoot` feature. This requires running `EncryptRootInfo` to store encrypted root credentials in the `rootInfo` file in `/ops/bin/`. The credentials are stored using Blowfish encryption. Do not store the root password in plain text anywhere in the job file or the `SMA_DEFAULTS` file.
+If any Symitar batch jobs require root permissions, use the `ExecuteAsRoot` feature. This requires editing the plain-text `rootInfo` file in `/ops/bin/` and then running `EncryptRootInfo`, which reads it and writes `rootInfo.encrypted` in the same directory. `rootInfo.encrypted` is the file `ExecuteAsRoot` reads at run time, and the credentials in it are stored using Blowfish encryption. For the full procedure, see [Running RSJ as the SYM user](../reference/sym-user-root.md). Do not store the root password in plain text anywhere in the job file or the `SMA_DEFAULTS` file.
 
 **RSJ requires the UNIX agent.**
 RSJ checks for the `SMA_CONFIG_FILE` environment variable on startup and exits if it is not set. This prevents RSJ from being run outside of the OpCon UNIX agent, which provides job tracking and access control.
 
 **File permissions on /ops/bin/.**
-After installation, verify that the RSJ binaries in `/ops/bin/` have correct ownership and permissions. The binaries must be readable and executable by the SYM user.
+After installation, verify that the RSJ binaries in `/ops/bin/` are readable and executable by the SYM user. The permissions the installation procedure sets are `775` on `/ops/bin/*`, with `777` on `/ops/bin/args` and `/ops/bin/cancel` because RSJ writes to them while a job runs. See [Running RSJ as the SYM user](../reference/sym-user-root.md) for the commands that set them.
+
+Review these permissions against your own security requirements before accepting them. `/ops/bin` also holds `rootInfo.encrypted` and the `ExecuteAsRoot` binary, so any directory or file mode that is wider than the SYM user needs widens access to root elevation as well.
 
 ## FAQs
 

@@ -58,7 +58,7 @@ When the original primary server is restored, run the FAILOVER macro in reverse 
 ## Security considerations
 
 **Credentials and encrypted files are not replicated automatically.**
-If you use `ExecuteAsRoot`, the `rootInfo` file in `/ops/bin/` contains encrypted root credentials. Verify that this file is present and current on both the primary and secondary servers.
+If you use `ExecuteAsRoot`, the file that holds the encrypted root credentials is `rootInfo.encrypted` in `/ops/bin/` — not `rootInfo`, which is the plain-text input you edit. Verify that `rootInfo.encrypted` is present and current on both the primary and secondary servers. Keep `rootInfo` on both as well, so `EncryptRootInfo` can regenerate the encrypted file on the secondary if it is missing or stale.
 
 ## Glossary
 

@@ -86,7 +86,7 @@ The current best practice is to place `ERROR_LEVEL` checking only at the beginni
 
 - To disable error checking for a job: `;ERROR_LEVEL 999` (999 is outside the normal error code range)
 - To exclude error code 7 ("Terminate specification found in a Repgen"): `;ERROR_LEVEL 1-6,8-10`
-- To trap all errors (recommended for new installations): `;ERROR_LEVEL 1-255`
+- To trap every non-zero return code: `;ERROR_LEVEL 1-1024`, which is also the RSJ default
 
 :::
 
@@ -179,7 +179,7 @@ The `MAX_EXCEPTIONS` directive is only available from SMA Technologies. Symitar 
 
 ```
 ;skip exception checking
-;MAX_EXCEPTIONS 2000000
+;MAX_EXCEPTIONS 2000000000
 
 %PROGRAM REPGEN
 prompt : answer
@@ -357,7 +357,7 @@ The quotes around the report name are mandatory. This directive is turned off by
 :::
 
 **RSJ default values:**
-- `;ERROR_LEVEL 1-255`
+- `;ERROR_LEVEL 1-1024` — every non-zero return code stops the job
 - `;MAX_EXCEPTIONS 0`
 
 ## Best practices for error checking
@@ -388,7 +388,7 @@ Always use `ERROR_LEVEL` and `MAX_EXCEPTIONS` together. RSJ checks both exceptio
 For most installations, a good starting point in the `SMA_DEFAULTS` file is:
 
 ```
-;ERROR_LEVEL 1-255
+;ERROR_LEVEL 1-1024
 ;MAX_EXCEPTIONS 0
 ;DIE_NO_ERROR_CODE TRUE
 ```
@@ -493,7 +493,7 @@ Place RSJ commands in separate job files and include them via `%JOBFILE`:
 %JOBFILE TURN_ON_CHECKING
 
 TURN_OFF_CHECKING:
-;MAX_EXCEPTIONS 20000000
+;MAX_EXCEPTIONS 2000000000
 
 TURN_ON_CHECKING:
 ;MAX_EXCEPTIONS 0
