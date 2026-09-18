@@ -343,7 +343,7 @@ This utility is recommended for locating SEQ numbers for all reports generated b
 
 :::
 
-Searches the batch output file in `/SYM/SYM###/opcon_reports/<BatchJobName>` for the SEQ number of a report or output file. Sets a property in OpCon with the SEQ number for use in downstream processing.
+Searches the batch output file in `/SYM/SYMnnn/opcon_reports/<BatchJobName>` for the SEQ number of a report or output file. Sets a property in OpCon with the SEQ number for use in downstream processing.
 
 For additional information, refer to [Episys: Find Report from RSJ Output](https://help.smatechnologies.com/opcon/core/job-types/unix#episys-find-report-from-rsj-output) in the Concepts online help.
 
@@ -395,7 +395,7 @@ Use this utility only when `LookForReportInRSJ` is unsuccessful.
 
 :::
 
-Searches for the SEQ number of a batch output file or report in `/SYM/SYM###/REPORT`. When it finds the file, it passes the SEQ number back to the OpCon server to be stored in a property using MSGIN.
+Searches for the SEQ number of a batch output file or report in `/SYM/SYMnnn/REPORT`. When it finds the file, it passes the SEQ number back to the OpCon server to be stored in a property using MSGIN.
 
 This program takes a variable number of arguments. The first six required arguments alone find the last batch output file for the job. The optional seventh argument finds an individual output report within that batch output report. The optional eighth argument finds a specific occurrence of the report name.
 
@@ -573,7 +573,7 @@ This utility must run as the root user for backup jobs. Concurrent execution is 
 
 ## restore_backup_reports
 
-Restores a file created by `backup_reports` and places the files in `/SYM/SYM###/opcon_reports`. Specify the file name without the full path — the program prepends the correct path automatically. You are responsible for removing any unneeded or unwanted files after restoration.
+Restores a file created by `backup_reports` and places the files in `/SYM/SYMnnn/opcon_reports`. Specify the file name without the full path — the program prepends the correct path automatically. You are responsible for removing any unneeded or unwanted files after restoration.
 
 **Usage:** `/ops/bin/restore_backup_reports SYM# file_name`
 
@@ -725,7 +725,7 @@ This utility is deprecated and will be removed in a future version of RSJ. Use `
 
 :::
 
-Searches for the file name from the latest batch output file in `/SYM/SYM###/opcon_reports/<file name>`. Sets a property with the SEQ number for downstream processing.
+Searches for the file name from the latest batch output file in `/SYM/SYMnnn/opcon_reports/<file name>`. Sets a property with the SEQ number for downstream processing.
 
 :::tip Example
 
@@ -752,7 +752,7 @@ This utility is deprecated and will be removed in a future version of RSJ. Use `
 
 :::
 
-Searches for the sequence number of a report or output file from the batch output file in `/SYM/SYM###/opcon_reports/<file name>`.
+Searches for the sequence number of a report or output file from the batch output file in `/SYM/SYMnnn/opcon_reports/<file name>`.
 
 :::tip Example
 
@@ -770,7 +770,7 @@ This utility is deprecated and will be removed in a future version of RSJ. Use `
 
 :::
 
-Searches for the sequence number of a report or output file from the batch output file in `/SYM/SYM###/REPORT`. Useful for finding sequence numbers of reports not created from RSJ.
+Searches for the sequence number of a report or output file from the batch output file in `/SYM/SYMnnn/REPORT`. Useful for finding sequence numbers of reports not created from RSJ.
 
 :::tip Example
 

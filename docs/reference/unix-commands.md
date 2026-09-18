@@ -26,7 +26,7 @@ Compare two directories for differences.
 
 Find all files that have match date specifications.
 
-### /ops/bin/find_prompts sym# jobfile
+### /ops/bin/find_prompts SYM# jobfile
 
 Find all prompts in a job.
 
