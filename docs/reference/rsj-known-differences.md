@@ -36,6 +36,6 @@ RSJ differs from Symitar's native batch facilities (AutoBatch, ssj) in several i
 
 - RSJ ignores any `SPLIT` and `JOIN` directives. Testing at customer sites shows no appreciable elapsed time difference between running multiple stacked repgen jobs in parallel mode and running them in single-thread mode. This is because Symitar programs are typically disk-bound — running multiple disk-bound processes causes disk thrashing. Running them sequentially keeps the disk head in a smaller area, resulting in faster read/write sequences and better disk cache performance. If testing shows an issue, run multiple RSJ jobs instead.
 
-- RSJ may not fully output all errors to the `/SYM/SYMnnn/REPORTS` directory. Use the view output option from OpCon to view the full job output.
+- RSJ may not fully output all errors to the `/SYM/SYMnnn/REPORT` directory. Use the view output option from OpCon to view the full job output.
 
 - RSJ uses the file `/SYM/SYMnnn/LETTERSPECS/SMA_DATES` to get the previous processing date, current processing date, and current system date. This file must be updated daily and after any processing date change. See [Important Symitar concepts](../important-symitar-concepts.md).

@@ -86,7 +86,7 @@ SMA Technologies uses the `update_scf` program to modify each Symitar job file p
                         BATCH_OUTPUT.xxxxxx
             /LETTERSPECS
                     SMA_DATES
-    /SYM###
+    /SYMnnn
             /BATCH
                     SMA_DATES.JOB
                     Some_job_name_1

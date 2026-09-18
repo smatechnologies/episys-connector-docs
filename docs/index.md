@@ -1,4 +1,10 @@
 ---
+title: Episys Connector
+description: "Schedule and run Symitar batch jobs on an Episys server from OpCon using RSJ: installation, command line, job file directives, utility programs, and reference."
+tags:
+  - Conceptual
+  - System Administrator
+  - Episys Connector
 slug: '/'
 sidebar_label: 'Episys Connector'
 hide_table_of_contents: true

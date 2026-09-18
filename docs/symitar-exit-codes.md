@@ -71,7 +71,7 @@ This code normally results from a logical PowerOn (repgen) coding error. The def
 
 Any errors coded in the `EDITRUNABORT` command receive this batch return code. Exclusive to Edit Runs.
 
-### 100 — Edit run aborted
+### 100 — System or resource condition
 
 There are three possibilities for exit code 100:
 
@@ -90,7 +90,7 @@ Some error codes can be triggered when running in a test SYM or on a test machin
 To disable error checking temporarily:
 
 ```
-;MAX_EXCEPTIONS 20000000
+;MAX_EXCEPTIONS 2000000000
 ;ERROR_LEVEL 999
 ```
 

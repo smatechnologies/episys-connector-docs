@@ -38,7 +38,7 @@ Links to the sequence number reports in the `REPORT` directory are created in th
 
 ## RSJ report naming
 
-When Symitar jobs run, the reports they create are placed in `/SYM/SYM###/REPORT` (where `###` is the three-digit SYM number). Each report file is named as a six-digit number.
+When Symitar jobs run, the reports they create are placed in `/SYM/SYMnnn/REPORT` (where `nnn` is the three-digit SYM number). Each report file is named as a six-digit number.
 
 One report file serves as the cross-reference between these sequence numbers and the report titles (along with other information). This cross-reference report is the batch output file.
 

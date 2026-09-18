@@ -100,13 +100,13 @@ Set `;ERROR_LEVEL 1-6,8-10` at the beginning of the job and reset it after the n
 %JOBFILE TURN_ON_CHECKING
 
 File: TURN_OFF_CHECKING
-;MAX_EXCEPTIONS 20000000
+;MAX_EXCEPTIONS 2000000000
 
 File: TURN_ON_CHECKING
 ;MAX_EXCEPTIONS 0
 ```
 
-### Why is RSJ not executing MAX_EXCEPTIONS, ERROR_LEVEL, SCRIPT, or RESTART_POINTS correctly?
+### Why is RSJ not applying MAX_EXCEPTIONS, ERROR_LEVEL, SCRIPT, or RESTART_POINTS correctly?
 
 - Using Episys to modify the job file is not recommended. All Episys job file editors move comment lines to the top of the file, producing a job file that RSJ cannot process correctly. Use a UNIX editor instead.
 - The exact syntax was not used. Recheck the syntax.
@@ -142,7 +142,7 @@ Insert the following commands at the start of the job file:
 
 ```
 ;ERROR_LEVEL 999
-;MAX_EXCEPTIONS 20000000
+;MAX_EXCEPTIONS 2000000000
 ```
 
 ### What batch queues does RSJ use?

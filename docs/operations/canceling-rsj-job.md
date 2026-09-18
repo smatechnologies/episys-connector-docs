@@ -25,12 +25,12 @@ Do not stop, kill, or cancel an RSJ job with any method other than the `cancel_r
 ## Command syntax
 
 ```
-cancel_rsj sym# jobfile
+cancel_rsj SYM# jobfile
 ```
 
 | Parameter | Description |
 | --------- | ----------- |
-| `sym#` | The SYM number to search. Accepted formats: `nnn` or `SYMnnn`. |
+| `SYM#` | The SYM number to search. Accepted formats: `nnn` or `SYMnnn`. |
 | `jobfile` | The name of the job file to cancel. |
 
 ## Ghost login behavior

@@ -77,6 +77,13 @@ Add the `;ExecuteAsRoot` directive immediately before the job that requires root
 %JOBFILE ONLINE
 ```
 
+The directive elevates exactly one program and is then consumed. In this example only
+`BACKUPSYM000TOSYM001` runs as root; `CLOSEDAY` and everything after it revert to the SYM user. To
+elevate more than one job, repeat the directive before each one.
+
+Placing `;ExecuteAsRoot` before a `%JOBFILE` line and placing it inside the corresponding `%PROGRAM`
+block have the same effect.
+
 ### Create the root information file
 
 To set up the root information file, complete the following steps:

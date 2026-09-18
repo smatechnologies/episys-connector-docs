@@ -213,7 +213,7 @@ tags:
 - Fixed an issue in `LookForReportSequenceInReports` where the occurrence parameter was not handled correctly. The count was being reset at the start of each file searched, so occurrence values greater than 1 never matched.
 - Fixed `ForceLogOff` to recognize the updated Symitar executable name (`/SYM/SYMxxx/SYMITAR`). Previously, the search was case-sensitive and used a hard-coded field offset that did not account for the date field in the `ps -ef` output.
 - Added exit code `20` to `LookForReport`: returned when a matching report is found in the batch output file but the corresponding physical file does not exist in the REPORT directory.
-- Added summary file support to RSJ. See [Summary files](operations/summary-files) for configuration details.
+- Added summary file support to RSJ. See [Summary files](./operations/summary-files.md) for configuration details.
 - Added support for Symitar job names that contain special characters such as `$`.
 
 ---
